@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Big Five サーベイ{% endblock %}
+
+{% block extra_head %}
+  <meta name="description" content="50問に回答してビッグファイブ診断を受けられる無料の日本語テストです。">
+  <meta property="og:title" content="Big Five 50問テスト">
+  <meta property="og:description" content="開放性・誠実性・外向性・協調性・神経症傾向の5特性をレーダーチャートで確認できます。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://example.com/">
+  <meta property="og:image" content="https://example.com/static/ogp/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Big Five 50問テスト">
+  <meta name="twitter:description" content="匿名で受けられる日本語ビッグファイブ診断。約5分で結果が分かります。">
+  <meta name="twitter:image" content="https://example.com/static/ogp/og-image.png">
+{% endblock %}
+
+{% block content %}
+  <div class="row align-items-center g-4">
+    <div class="col-lg-7">
+      <h1 class="display-5 fw-bold mb-4">IPIP Big Five 50問テスト</h1>
+      <p class="lead">
+        Big Five（ビッグファイブ）は、開放性・誠実性・外向性・協調性・神経症傾向の5因子で
+        性格を捉える広く使われている心理特性モデルです。
+      </p>
+      <p>
+        本テストは国際パーソナリティ項目プール（IPIP）が公開している50問版をベースとした
+        簡易診断です。回答時間はおよそ3〜8分、すべて日本語で匿名回答できます。
+      </p>
+      <p class="fw-semibold">結果は参考情報として活用し、臨床診断目的では使用しないでください。</p>
+      <a class="btn btn-primary btn-lg mt-3" href="/app/survey">テストを開始する</a>
+    </div>
+    <div class="col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h4">テスト概要</h2>
+          <ul class="list-unstyled mb-0 mt-3">
+            <li class="mb-2">・設問数：50（5件法リッカート）</li>
+            <li class="mb-2">・所要時間：約3〜8分</li>
+            <li class="mb-2">・回答はすべて必須です</li>
+            <li class="mb-0">・結果はブラウザ上に保存され、個人情報は収集しません</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

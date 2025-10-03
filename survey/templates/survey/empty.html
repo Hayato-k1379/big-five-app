@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}設問データが未登録です{% endblock %}
+
+{% block content %}
+  <div class="text-center py-5">
+    <h2 class="mb-3">設問がまだ登録されていません</h2>
+    <p>
+      管理画面や <code>python manage.py loaddata items_ja.json</code> で
+      PersonalityItem を登録してください。
+    </p>
+    <a class="btn btn-primary" href="{% url 'survey:home' %}">トップに戻る</a>
+  </div>
+{% endblock %}

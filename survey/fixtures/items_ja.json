@@ -1,0 +1,552 @@
+[
+  {
+    "model": "survey.personalityitem",
+    "pk": 1,
+    "fields": {
+      "code": "E1",
+      "text_ja": "私はパーティーでは場の中心になるほうだ",
+      "trait": "E",
+      "is_reversed": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 2,
+    "fields": {
+      "code": "A1",
+      "text_ja": "私は他人のことをあまり気にかけない",
+      "trait": "A",
+      "is_reversed": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 3,
+    "fields": {
+      "code": "C1",
+      "text_ja": "私はいつも準備ができている",
+      "trait": "C",
+      "is_reversed": false,
+      "order": 3
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 4,
+    "fields": {
+      "code": "N1",
+      "text_ja": "私はすぐにストレスを感じる",
+      "trait": "N",
+      "is_reversed": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 5,
+    "fields": {
+      "code": "O1",
+      "text_ja": "私は語彙が豊富だ",
+      "trait": "O",
+      "is_reversed": false,
+      "order": 5
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 6,
+    "fields": {
+      "code": "E2",
+      "text_ja": "私はあまり多くを話さない",
+      "trait": "E",
+      "is_reversed": true,
+      "order": 6
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 7,
+    "fields": {
+      "code": "A2",
+      "text_ja": "私は人に興味がある",
+      "trait": "A",
+      "is_reversed": false,
+      "order": 7
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 8,
+    "fields": {
+      "code": "C2",
+      "text_ja": "私は持ち物をあちこちに置きっぱなしにする",
+      "trait": "C",
+      "is_reversed": true,
+      "order": 8
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 9,
+    "fields": {
+      "code": "N2",
+      "text_ja": "私はたいてい落ち着いている",
+      "trait": "N",
+      "is_reversed": true,
+      "order": 9
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 10,
+    "fields": {
+      "code": "O2",
+      "text_ja": "私は抽象的な考えを理解するのが難しい",
+      "trait": "O",
+      "is_reversed": true,
+      "order": 10
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 11,
+    "fields": {
+      "code": "E3",
+      "text_ja": "私は人前でも居心地がいい",
+      "trait": "E",
+      "is_reversed": false,
+      "order": 11
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 12,
+    "fields": {
+      "code": "A3",
+      "text_ja": "私は人を侮辱することがある",
+      "trait": "A",
+      "is_reversed": true,
+      "order": 12
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 13,
+    "fields": {
+      "code": "C3",
+      "text_ja": "私は細部にも気を配る",
+      "trait": "C",
+      "is_reversed": false,
+      "order": 13
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 14,
+    "fields": {
+      "code": "N3",
+      "text_ja": "私はいろいろと心配する",
+      "trait": "N",
+      "is_reversed": false,
+      "order": 14
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 15,
+    "fields": {
+      "code": "O3",
+      "text_ja": "私は生き生きとした想像力を持っている",
+      "trait": "O",
+      "is_reversed": false,
+      "order": 15
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 16,
+    "fields": {
+      "code": "E4",
+      "text_ja": "私は目立たず背景に引っ込んでいる",
+      "trait": "E",
+      "is_reversed": true,
+      "order": 16
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 17,
+    "fields": {
+      "code": "A4",
+      "text_ja": "私は他人の気持ちに共感する",
+      "trait": "A",
+      "is_reversed": false,
+      "order": 17
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 18,
+    "fields": {
+      "code": "C4",
+      "text_ja": "私は物事を台無しにしてしまうことがある",
+      "trait": "C",
+      "is_reversed": true,
+      "order": 18
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 19,
+    "fields": {
+      "code": "N4",
+      "text_ja": "私はめったに憂うつにならない",
+      "trait": "N",
+      "is_reversed": true,
+      "order": 19
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 20,
+    "fields": {
+      "code": "O4",
+      "text_ja": "私は抽象的なことには興味がない",
+      "trait": "O",
+      "is_reversed": true,
+      "order": 20
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 21,
+    "fields": {
+      "code": "E5",
+      "text_ja": "私は自分から会話を始める",
+      "trait": "E",
+      "is_reversed": false,
+      "order": 21
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 22,
+    "fields": {
+      "code": "A5",
+      "text_ja": "私は他人の問題には関心がない",
+      "trait": "A",
+      "is_reversed": true,
+      "order": 22
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 23,
+    "fields": {
+      "code": "C5",
+      "text_ja": "私は家事や仕事をすぐ片づける",
+      "trait": "C",
+      "is_reversed": false,
+      "order": 23
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 24,
+    "fields": {
+      "code": "N5",
+      "text_ja": "私は動揺しやすい",
+      "trait": "N",
+      "is_reversed": false,
+      "order": 24
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 25,
+    "fields": {
+      "code": "O5",
+      "text_ja": "私は優れたアイデアを思いつく",
+      "trait": "O",
+      "is_reversed": false,
+      "order": 25
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 26,
+    "fields": {
+      "code": "E6",
+      "text_ja": "私は言うことが少ない",
+      "trait": "E",
+      "is_reversed": true,
+      "order": 26
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 27,
+    "fields": {
+      "code": "A6",
+      "text_ja": "私は優しい心の持ち主だ",
+      "trait": "A",
+      "is_reversed": false,
+      "order": 27
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 28,
+    "fields": {
+      "code": "C6",
+      "text_ja": "私は元の場所に物を戻し忘れることが多い",
+      "trait": "C",
+      "is_reversed": true,
+      "order": 28
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 29,
+    "fields": {
+      "code": "N6",
+      "text_ja": "私はすぐに気分を害する",
+      "trait": "N",
+      "is_reversed": false,
+      "order": 29
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 30,
+    "fields": {
+      "code": "O6",
+      "text_ja": "私は良い想像力を持っていない",
+      "trait": "O",
+      "is_reversed": true,
+      "order": 30
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 31,
+    "fields": {
+      "code": "E7",
+      "text_ja": "私はパーティーで多くの人と話す",
+      "trait": "E",
+      "is_reversed": false,
+      "order": 31
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 32,
+    "fields": {
+      "code": "A7",
+      "text_ja": "私は他人には本当は興味がない",
+      "trait": "A",
+      "is_reversed": true,
+      "order": 32
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 33,
+    "fields": {
+      "code": "C7",
+      "text_ja": "私は秩序だった状態が好きだ",
+      "trait": "C",
+      "is_reversed": false,
+      "order": 33
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 34,
+    "fields": {
+      "code": "N7",
+      "text_ja": "私は気分がよく変わる",
+      "trait": "N",
+      "is_reversed": false,
+      "order": 34
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 35,
+    "fields": {
+      "code": "O7",
+      "text_ja": "私は物事をすばやく理解する",
+      "trait": "O",
+      "is_reversed": false,
+      "order": 35
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 36,
+    "fields": {
+      "code": "E8",
+      "text_ja": "私は注目を集めるのが好きではない",
+      "trait": "E",
+      "is_reversed": true,
+      "order": 36
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 37,
+    "fields": {
+      "code": "A8",
+      "text_ja": "私は他人のために時間を割く",
+      "trait": "A",
+      "is_reversed": false,
+      "order": 37
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 38,
+    "fields": {
+      "code": "C8",
+      "text_ja": "私は義務を怠ることがある",
+      "trait": "C",
+      "is_reversed": true,
+      "order": 38
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 39,
+    "fields": {
+      "code": "N8",
+      "text_ja": "私は頻繁に気分の波がある",
+      "trait": "N",
+      "is_reversed": false,
+      "order": 39
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 40,
+    "fields": {
+      "code": "O8",
+      "text_ja": "私は難しい言葉を使う",
+      "trait": "O",
+      "is_reversed": false,
+      "order": 40
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 41,
+    "fields": {
+      "code": "E9",
+      "text_ja": "私は注目の的になることを気にしない",
+      "trait": "E",
+      "is_reversed": false,
+      "order": 41
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 42,
+    "fields": {
+      "code": "A9",
+      "text_ja": "私は他人の感情を感じ取る",
+      "trait": "A",
+      "is_reversed": false,
+      "order": 42
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 43,
+    "fields": {
+      "code": "C9",
+      "text_ja": "私はスケジュールに従って行動する",
+      "trait": "C",
+      "is_reversed": false,
+      "order": 43
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 44,
+    "fields": {
+      "code": "N9",
+      "text_ja": "私はすぐにいらいらする",
+      "trait": "N",
+      "is_reversed": false,
+      "order": 44
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 45,
+    "fields": {
+      "code": "O9",
+      "text_ja": "私は物事についてよく熟考する",
+      "trait": "O",
+      "is_reversed": false,
+      "order": 45
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 46,
+    "fields": {
+      "code": "E10",
+      "text_ja": "私は見知らぬ人の前では静かになる",
+      "trait": "E",
+      "is_reversed": true,
+      "order": 46
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 47,
+    "fields": {
+      "code": "A10",
+      "text_ja": "私は人を安心させる",
+      "trait": "A",
+      "is_reversed": false,
+      "order": 47
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 48,
+    "fields": {
+      "code": "C10",
+      "text_ja": "私は仕事に厳密さを求める",
+      "trait": "C",
+      "is_reversed": false,
+      "order": 48
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 49,
+    "fields": {
+      "code": "N10",
+      "text_ja": "私はよく憂うつな気分になる",
+      "trait": "N",
+      "is_reversed": false,
+      "order": 49
+    }
+  },
+  {
+    "model": "survey.personalityitem",
+    "pk": 50,
+    "fields": {
+      "code": "O10",
+      "text_ja": "私はアイデアにあふれている",
+      "trait": "O",
+      "is_reversed": false,
+      "order": 50
+    }
+  }
+]
