@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}50問テスト{% endblock %}
+
+{% block content %}
+  <h1 class="h2 mb-4">50問性格テスト</h1>
+  <p class="text-muted">各設問に対して最も当てはまる選択肢を選んでください（全問必須）。</p>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    {% for item, field in question_fields %}
+      <section class="card mb-3 shadow-sm question-card">
+        <div class="card-body">
+          <h2 class="h5 mb-3">{{ forloop.counter }}. {{ field.label }}</h2>
+          <div class="row row-cols-1 row-cols-md-5 g-2">
+            {% for radio in field %}
+              <div class="col">
+                <label class="btn btn-outline-primary w-100 h-100 d-flex flex-column justify-content-center align-items-center{% if radio.choice_value == field.value %} active-choice{% endif %}">
+                  {{ radio.tag }}
+                  <span class="small mt-1">{{ radio.choice_label }}</span>
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+          {% if field.errors %}
+            <div class="invalid-feedback d-block">{{ field.errors|join:" " }}</div>
+          {% endif %}
+        </div>
+      </section>
+    {% endfor %}
+
+    <div class="d-flex justify-content-end">
+      <button type="submit" class="btn btn-lg btn-primary">結果を見る</button>
+    </div>
+  </form>
+{% endblock %}
+
+{% block extra_scripts %}
+  {{ block.super }}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.question-card').forEach((card) => {
+        const labels = Array.from(card.querySelectorAll('label'));
+        const activate = (targetLabel) => {
+          labels.forEach((label) => label.classList.remove('active-choice'));
+          if (targetLabel) {
+            targetLabel.classList.add('active-choice');
+          }
+        };
+        labels.forEach((label) => {
+          const input = label.querySelector('input[type="radio"]');
+          if (!input) {
+            return;
+          }
+          if (input.checked) {
+            activate(label);
+          }
+          input.addEventListener('change', () => {
+            activate(label);
+          });
+        });
+      });
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}結果{% endblock %}
+
+{% block extra_head %}
+  <meta name="robots" content="noindex,nofollow">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4">
+    <div class="mb-3 mb-lg-0">
+      <h1 class="h2">診断結果</h1>
+      <p class="text-muted mb-1">UUID: {{ result.pk }}</p>
+      <p class="text-muted">回答日時: {{ result.created_at|date:"Y年n月j日 H:i" }}</p>
+    </div>
+    <div class="text-lg-end">
+      <a class="btn btn-outline-secondary me-2 mb-2" href="{% url 'survey:home' %}">トップへ</a>
+      <a class="btn btn-primary mb-2" href="{% url 'survey:survey' %}">もう一度受ける</a>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h2 class="h5">特性別スコア</h2>
+          <table class="table table-striped mt-3 align-middle">
+            <thead>
+              <tr>
+                <th scope="col">特性</th>
+                <th scope="col">合計点</th>
+                <th scope="col">スケール</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in trait_rows %}
+                <tr>
+                  <th scope="row">{{ row.label }}</th>
+                  <td>
+                    <span class="fw-semibold">{{ row.sum }}</span>
+                    <span class="text-muted small d-block">範囲: {{ raw_min }} 〜 {{ raw_max }}</span>
+                  </td>
+                  <td>
+                    <span class="fw-semibold">{{ row.scaled }}</span>
+                    <span class="text-muted small d-block">範囲: {{ scaled_min }} 〜 {{ scaled_max }}</span>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h2 class="h5">レーダーチャート</h2>
+          <canvas id="result-chart" width="400" height="400"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="alert alert-info" role="note">
+    この診断は簡易的な自己理解の補助を目的としています。臨床診断や採用評価などの目的では使用しないでください。
+  </section>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    const chartData = {{ chart_json|safe }};
+    const ctx = document.getElementById('result-chart');
+    new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: chartData.labels,
+        datasets: [
+          {
+            label: '0-100 スケール',
+            data: chartData.scaled,
+            backgroundColor: 'rgba(13, 110, 253, 0.2)',
+            borderColor: 'rgba(13, 110, 253, 0.7)',
+            borderWidth: 2,
+            pointBackgroundColor: 'rgba(13, 110, 253, 1)'
+          }
+        ]
+      },
+      options: {
+        scales: {
+          r: {
+            suggestedMin: 0,
+            suggestedMax: 100,
+            ticks: {
+              stepSize: 20
+            }
+          }
+        }
+      }
+    });
+  </script>
+{% endblock %}
