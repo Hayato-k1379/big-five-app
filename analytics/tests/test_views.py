@@ -37,3 +37,25 @@ class AnalyticsViewTests(TestCase):
 
         # Middleware should attach a cookie when none was provided.
         self.assertIn(EnsureSessionIdMiddleware.COOKIE_NAME, response.cookies)
+
+    def test_purchased_note_respects_internal_next_parameter(self) -> None:
+        base_url = reverse("purchased_note")
+        next_url = "/app/result/12345678-1234-1234-1234-1234567890ab"
+        response = self.client.get(base_url, {"next": next_url})
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], next_url)
+
+        event = EventLog.objects.get()
+        self.assertEqual(event.event_type, "purchase_note")
+        self.assertEqual(event.extra_payload, {"path": base_url, "next": next_url})
+
+    def test_purchased_note_ignores_external_next_parameter(self) -> None:
+        base_url = reverse("purchased_note")
+        response = self.client.get(base_url, {"next": "https://example.com/"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "analytics/purchased_thanks.html")
+
+        event = EventLog.objects.get()
+        self.assertEqual(event.extra_payload, {"path": base_url})

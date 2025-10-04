@@ -80,7 +80,7 @@ class SurveyFlowTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "survey/result.html")
         self.assertContains(response, "診断結果")
-        self.assertContains(response, "詳細結果を見る（¥500）")
+        self.assertContains(response, "詳細結果（¥500）")
         chart_json = response.context["chart_json"]
         payload = json.loads(chart_json)
         self.assertEqual(payload["scaled"], [expected_scaled] * 5)

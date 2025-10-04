@@ -1,5 +1,8 @@
 <div class="container" style="padding:24px;">
   <h2>ご購入ありがとうございます</h2>
   <p>有料コンテンツの閲覧が反映されました。ブックマークをおすすめします。</p>
-  <a class="btn btn-secondary" href="/">トップへ戻る</a>
+  {% if next_url %}
+    <a class="btn btn-primary" href="{{ next_url }}">診断結果に戻る</a>
+  {% endif %}
+  <a class="btn btn-secondary mt-2" href="/">トップへ戻る</a>
 </div>
