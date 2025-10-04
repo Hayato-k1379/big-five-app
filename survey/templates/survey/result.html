@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}結果{% endblock %}
 
@@ -60,6 +61,15 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="cta-wrap" style="margin-top:24px;">
+    <a class="btn btn-primary btn-lg" href="{% url 'go_note_detail' %}">
+      詳細結果を見る（¥500）
+    </a>
+    <p class="text-muted" style="margin-top:8px;">
+      ※ 有料記事（note）に移動します。購入後は記事内の「アプリに戻る」リンクから本ページに戻れます。
+    </p>
   </div>
 
   <section class="alert alert-info" role="note">

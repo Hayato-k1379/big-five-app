@@ -1,6 +1,7 @@
 """Django settings for the Big-Five personality survey project."""
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,6 +20,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "survey",
+    "analytics",
 ]
 
 MIDDLEWARE = [
@@ -30,6 +32,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "analytics.middleware.EnsureSessionIdMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -85,6 +88,8 @@ FRONTEND_DIST_DIR = BASE_DIR / "frontend" / "dist"
 if FRONTEND_DIST_DIR.exists():
     STATICFILES_DIRS.append(FRONTEND_DIST_DIR)
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+NOTE_DETAIL_URL = os.getenv("NOTE_DETAIL_URL", "https://note.com/your_account/n/xxxxxxxx")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
