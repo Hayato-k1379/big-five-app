@@ -49,6 +49,14 @@ class SurveyAPITests(TestCase):
         self.assertIn("id", body)
         self.assertEqual(len(body["trait_scores"]), 5)
         self.assertTrue(all("label" in row for row in body["trait_scores"]))
+        self.assertTrue(all("display_score" in row for row in body["trait_scores"]))
+        self.assertTrue(all("raw_mean" in row for row in body["trait_scores"]))
+        self.assertIn("highlights", body)
+        highlights = body["highlights"]
+        self.assertIn("signature_strength", highlights)
+        self.assertIn("signature_caution", highlights)
+        self.assertIn("contrast_summary_locked", highlights)
+        self.assertTrue(highlights["contrast_summary_locked"])
         self.assertEqual(len(body["raw_scores"]), 50)
         self.assertTrue(
             SurveyResult.objects.filter(pk=body["id"]).exists(),
@@ -75,6 +83,7 @@ class SurveyAPITests(TestCase):
         body = response.json()
         self.assertEqual(body["id"], str(result.pk))
         self.assertEqual(len(body["trait_scores"]), 5)
+        self.assertIn("highlights", body)
 
     def test_score_endpoint_validates_missing_answers(self) -> None:
         responses = {"O1": 4}
