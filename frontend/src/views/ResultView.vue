@@ -30,10 +30,22 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="trait in result.trait_scores" :key="trait.trait">
+                <tr v-for="trait in displayTraits" :key="trait.trait">
                   <td>{{ trait.label }}</td>
                   <td class="text-right">{{ trait.sum }}</td>
-                  <td class="text-right">{{ trait.scaled }}</td>
+                  <td class="text-right">
+                    <div class="d-flex align-center justify-end" style="gap: 8px;">
+                      <span class="text-h6 font-weight-bold">{{ trait.scaled }}</span>
+                      <v-chip
+                        :color="trait.levelColor"
+                        size="small"
+                        variant="flat"
+                        class="text-body-2 font-weight-medium"
+                      >
+                        {{ trait.levelLabel }}
+                      </v-chip>
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </v-table>
@@ -44,6 +56,24 @@
         </p>
       </v-card-text>
     </v-card>
+    <v-sheet
+      v-if="result"
+      elevation="1"
+      class="mt-8 pa-6 d-flex flex-column align-center text-center"
+    >
+      <h2 class="text-h6 font-weight-bold mb-4">さらに詳しいフィードバックをチェック</h2>
+      <v-btn
+        color="primary"
+        size="large"
+        class="mb-2"
+        :href="NOTE_DETAIL_PATH"
+      >
+        詳細結果（¥500）
+      </v-btn>
+      <p class="text-body-2 text-medium-emphasis mb-0">
+        ※ 有料記事（note）に移動します。購入後は記事内の「アプリに戻る」リンクから本ページに戻れます。
+      </p>
+    </v-sheet>
     <v-alert v-else type="warning">結果が見つかりませんでした。</v-alert>
   </v-container>
 </template>
@@ -78,6 +108,32 @@ const loadFromHistoryState = () => {
     result.value = state.result;
   }
 };
+
+const NOTE_DETAIL_PATH = '/go/note-detail/';
+
+const getLevelInfo = (score) => {
+  if (score >= 66) {
+    return { label: '高', color: 'success' };
+  }
+  if (score >= 33) {
+    return { label: '中', color: 'warning' };
+  }
+  return { label: '低', color: 'info' };
+};
+
+const displayTraits = computed(() => {
+  if (!result.value) {
+    return [];
+  }
+  return result.value.trait_scores.map((trait) => {
+    const level = getLevelInfo(trait.scaled);
+    return {
+      ...trait,
+      levelLabel: level.label,
+      levelColor: level.color
+    };
+  });
+});
 
 const fetchResult = async () => {
   loading.value = true;

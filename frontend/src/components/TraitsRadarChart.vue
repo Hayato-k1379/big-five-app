@@ -32,10 +32,10 @@ const chartData = computed(() => ({
     {
       label: 'スコア',
       data: props.traitScores.map((item) => item.scaled),
-      backgroundColor: 'rgba(33, 150, 243, 0.25)',
-      borderColor: 'rgba(25, 118, 210, 1)',
+      backgroundColor: 'rgba(33, 150, 243, 0.22)',
+      borderColor: '#0d47a1',
       borderWidth: 2,
-      pointBackgroundColor: 'rgba(25, 118, 210, 1)',
+      pointBackgroundColor: '#0d47a1',
       pointBorderColor: '#fff'
     }
   ]
@@ -54,7 +54,7 @@ const chartOptions = computed(() => ({
       },
       pointLabels: {
         font: {
-          size: 12
+          size: 16
         }
       }
     }
@@ -65,6 +65,12 @@ const chartOptions = computed(() => ({
 <style scoped>
 .chart-wrapper {
   position: relative;
-  height: 320px;
+  height: 480px;
+}
+
+@media (min-width: 960px) {
+  .chart-wrapper {
+    height: 600px;
+  }
 }
 </style>
