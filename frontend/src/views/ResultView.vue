@@ -35,7 +35,7 @@
                   <td class="text-right">{{ trait.sum }}</td>
                   <td class="text-right">
                     <div class="d-flex align-center justify-end" style="gap: 8px;">
-                      <span :class="[scoreTextClass, 'font-weight-bold']">{{ trait.scaled }}</span>
+                      <span :class="[scoreTextClass, 'font-weight-bold']">{{ trait.displayScore }}</span>
                       <v-chip
                         :color="trait.levelColor"
                         :size="chipSize"
@@ -51,6 +51,41 @@
             </v-table>
           </v-col>
         </v-row>
+        <section v-if="highlightCards.length" class="highlight-section mt-8">
+          <h2 class="text-subtitle-1 font-weight-bold mb-4">特性ハイライト</h2>
+          <v-row class="gy-4">
+            <v-col v-for="card in highlightCards" :key="card.key" cols="12" md="6">
+              <v-card
+                variant="outlined"
+                class="highlight-card pa-4"
+                :style="{ borderLeft: `4px solid var(--v-theme-${card.color})` }"
+              >
+                <div class="d-flex align-center mb-3" style="gap: 12px;">
+                  <v-chip
+                    v-if="card.badge"
+                    :color="card.color"
+                    variant="flat"
+                    size="small"
+                    class="highlight-chip font-weight-medium"
+                  >
+                    {{ card.badge }}
+                  </v-chip>
+                  <span class="text-subtitle-1 font-weight-medium">{{ card.title }}</span>
+                </div>
+                <div class="d-flex flex-column" style="gap: 8px;">
+                  <div
+                    v-for="item in card.traits"
+                    :key="item.trait"
+                    class="d-flex align-center justify-space-between highlight-trait-row"
+                  >
+                    <span class="text-body-1 font-weight-medium">{{ item.label }}</span>
+                    <span class="text-subtitle-1 font-weight-bold">{{ item.display_score }}</span>
+                  </div>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </section>
         <p class="text-body-2 text-medium-emphasis mt-6">
           ID: {{ result.id }} ／ 診断日時: {{ formattedDate }}
         </p>
@@ -118,13 +153,13 @@ const loadFromHistoryState = () => {
 const NOTE_DETAIL_PATH = '/go/note-detail/';
 
 const getLevelInfo = (score) => {
-  if (score >= 66) {
-    return { label: '高', color: 'success' };
+  if (score >= 60) {
+    return { label: '強', color: 'success' };
   }
-  if (score >= 33) {
-    return { label: '中', color: 'warning' };
+  if (score <= 40) {
+    return { label: '弱', color: 'indigo' };
   }
-  return { label: '低', color: 'info' };
+  return { label: '中', color: 'secondary' };
 };
 
 const isMobile = computed(() => display.smAndDown.value);
@@ -137,13 +172,66 @@ const displayTraits = computed(() => {
     return [];
   }
   return result.value.trait_scores.map((trait) => {
-    const level = getLevelInfo(trait.scaled);
+    const displayScore = trait.display_score ?? trait.scaled;
+    const level = getLevelInfo(displayScore);
     return {
       ...trait,
+      displayScore,
       levelLabel: level.label,
       levelColor: level.color
     };
   });
+});
+
+const highlightCards = computed(() => {
+  const data = result.value?.highlights;
+  if (!data) {
+    return [];
+  }
+
+  const cards = [];
+
+  if (data.signature_strength) {
+    cards.push({
+      key: 'signature_strength',
+      title: '代表特性（強）',
+      badge: '強',
+      color: 'success',
+      traits: [data.signature_strength]
+    });
+  }
+
+  if (data.signature_caution) {
+    cards.push({
+      key: 'signature_caution',
+      title: '代表特性（弱）',
+      badge: '弱',
+      color: 'indigo',
+      traits: [data.signature_caution]
+    });
+  }
+
+  if (Array.isArray(data.strong_candidates) && data.strong_candidates.length) {
+    cards.push({
+      key: 'strong_candidates',
+      title: '強 候補',
+      badge: null,
+      color: 'success',
+      traits: data.strong_candidates
+    });
+  }
+
+  if (Array.isArray(data.weak_candidates) && data.weak_candidates.length) {
+    cards.push({
+      key: 'weak_candidates',
+      title: '弱 候補',
+      badge: null,
+      color: 'indigo',
+      traits: data.weak_candidates
+    });
+  }
+
+  return cards;
 });
 
 const fetchResult = async () => {
@@ -183,6 +271,23 @@ onMounted(async () => {
 
 .result-table :deep(td) {
   vertical-align: middle;
+}
+
+.highlight-section {
+  width: 100%;
+}
+
+.highlight-card {
+  border-left-width: 4px !important;
+  height: 100%;
+}
+
+.highlight-chip {
+  letter-spacing: 0.12em;
+}
+
+.highlight-trait-row {
+  padding-block: 6px;
 }
 
 @media (max-width: 599px) {

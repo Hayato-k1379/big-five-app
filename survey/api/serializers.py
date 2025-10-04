@@ -3,9 +3,13 @@ from __future__ import annotations
 
 from rest_framework import serializers
 
-from survey.constants import MAX_SCORE, MIN_SCORE, TRAIT_LABELS, TRAIT_ORDER
+from survey.constants import MAX_SCORE, MIN_SCORE
 from survey.models import PersonalityItem
 from survey.services import SurveyScoringError, compute_trait_scores
+from survey.insights import (
+    serialize_highlights,
+    serialize_trait_displays,
+)
 
 
 class PersonalityItemSerializer(serializers.ModelSerializer):
@@ -54,28 +58,15 @@ class SurveyScoreRequestSerializer(serializers.Serializer):
         return attrs
 
 
-def serialize_trait_rows(result) -> list[dict[str, object]]:
-    """Return an ordered trait summary for API responses."""
-
-    return [
-        {
-            "trait": trait,
-            "label": TRAIT_LABELS[trait],
-            "sum": result.trait_sum_map[trait],
-            "scaled": result.trait_scaled_map[trait],
-        }
-        for trait in TRAIT_ORDER
-    ]
-
-
 def serialize_result_payload(result) -> dict[str, object]:
     """Build the API payload shared by score and detail endpoints."""
-
+    rows, highlights = serialize_trait_displays(result.trait_sum_map)
     return {
         "id": str(result.pk),
         "created_at": result.created_at.isoformat(),
-        "trait_scores": serialize_trait_rows(result),
+        "trait_scores": rows,
         "raw_scores": result.raw_scores,
         "raw_range": {"min": MIN_SCORE, "max": MAX_SCORE},
         "scaled_range": {"min": 0, "max": 100},
+        "highlights": serialize_highlights(highlights),
     }
