@@ -16,12 +16,12 @@
         <p class="text-body-2 mb-0">各特性の合計値（最大{{ result.scaled_range.max }}）と0〜100スケール換算です。</p>
       </v-card-title>
       <v-card-text>
-        <v-row>
-          <v-col cols="12" md="6">
-            <traits-radar-chart :trait-scores="result.trait_scores" />
+        <v-row class="gy-6">
+          <v-col cols="12" class="d-flex justify-center">
+            <traits-radar-chart :trait-scores="result.trait_scores" class="w-100" />
           </v-col>
-          <v-col cols="12" md="6">
-            <v-table density="comfortable">
+          <v-col cols="12">
+            <v-table :density="tableDensity" class="result-table">
               <thead>
                 <tr>
                   <th>特性</th>
@@ -35,10 +35,10 @@
                   <td class="text-right">{{ trait.sum }}</td>
                   <td class="text-right">
                     <div class="d-flex align-center justify-end" style="gap: 8px;">
-                      <span class="text-h6 font-weight-bold">{{ trait.scaled }}</span>
+                      <span :class="[scoreTextClass, 'font-weight-bold']">{{ trait.scaled }}</span>
                       <v-chip
                         :color="trait.levelColor"
-                        size="small"
+                        :size="chipSize"
                         variant="flat"
                         class="text-body-2 font-weight-medium"
                       >
@@ -59,7 +59,10 @@
     <v-sheet
       v-if="result"
       elevation="1"
-      class="mt-8 pa-6 d-flex flex-column align-center text-center"
+      :class="[
+        'mt-8 d-flex flex-column align-center text-center cta-sheet',
+        isMobile ? 'pa-5' : 'pa-6'
+      ]"
     >
       <h2 class="text-h6 font-weight-bold mb-4">さらに詳しいフィードバックをチェック</h2>
       <v-btn
@@ -67,6 +70,7 @@
         size="large"
         class="mb-2"
         :href="NOTE_DETAIL_PATH"
+        :block="isMobile"
       >
         詳細結果（¥500）
       </v-btn>
@@ -83,12 +87,14 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import TraitsRadarChart from '../components/TraitsRadarChart.vue';
+import { useDisplay } from 'vuetify';
 
 const router = useRouter();
 const route = useRoute();
 const result = ref(null);
 const loading = ref(true);
 const error = ref('');
+const display = useDisplay();
 
 const goBack = () => {
   router.push({ name: 'survey' });
@@ -120,6 +126,11 @@ const getLevelInfo = (score) => {
   }
   return { label: '低', color: 'info' };
 };
+
+const isMobile = computed(() => display.smAndDown.value);
+const tableDensity = computed(() => (isMobile.value ? 'compact' : 'comfortable'));
+const chipSize = computed(() => (isMobile.value ? 'small' : 'default'));
+const scoreTextClass = computed(() => (isMobile.value ? 'text-subtitle-1' : 'text-h6'));
 
 const displayTraits = computed(() => {
   if (!result.value) {
@@ -158,3 +169,29 @@ onMounted(async () => {
   }
 });
 </script>
+
+<style scoped>
+.cta-sheet {
+  width: 100%;
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.result-table :deep(thead th) {
+  white-space: nowrap;
+}
+
+.result-table :deep(td) {
+  vertical-align: middle;
+}
+
+@media (max-width: 599px) {
+  .cta-sheet {
+    max-width: 100%;
+  }
+
+  .result-table :deep(td) {
+    padding-block: 12px;
+  }
+}
+</style>
