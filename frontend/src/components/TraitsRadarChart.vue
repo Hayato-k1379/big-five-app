@@ -65,12 +65,16 @@ const chartOptions = computed(() => ({
 <style scoped>
 .chart-wrapper {
   position: relative;
-  height: 480px;
+  width: 100%;
+  height: clamp(340px, 75vw, 620px);
+  max-width: 620px;
+  margin: 0 auto;
 }
 
-@media (min-width: 960px) {
+@media (min-width: 1280px) {
   .chart-wrapper {
-    height: 600px;
+    height: 680px;
+    max-width: 680px;
   }
 }
 </style>

@@ -26,7 +26,7 @@
 
           <v-divider class="my-6"></v-divider>
 
-          <v-form @submit.prevent="handleSubmit">
+          <v-form @submit.prevent="handleSubmit" class="survey-form">
             <div class="d-flex flex-column gap-6">
               <v-card
                 v-for="item in items"
@@ -51,16 +51,27 @@
               </v-card>
             </div>
 
-            <v-btn
-              type="submit"
-              color="primary"
-              size="large"
-              class="mt-8"
-              :loading="submitting"
-              :disabled="!canSubmit"
-            >
-              診断結果を見る
-            </v-btn>
+            <div class="action-buttons mt-8">
+              <v-btn
+                type="button"
+                variant="outlined"
+                color="secondary"
+                :disabled="!totalItems || submitting"
+                @click="fillRandomResponses"
+              >
+                ランダムに回答を埋める
+              </v-btn>
+
+              <v-btn
+                type="submit"
+                color="primary"
+                size="large"
+                :loading="submitting"
+                :disabled="!canSubmit"
+              >
+                診断結果を見る
+              </v-btn>
+            </div>
           </v-form>
         </v-card-text>
       </v-card>
@@ -112,6 +123,16 @@ const fetchItems = async () => {
   }
 };
 
+const fillRandomResponses = () => {
+  if (!items.value.length) {
+    return;
+  }
+  items.value.forEach((item) => {
+    const randomValue = Math.floor(Math.random() * likertChoices.length) + 1;
+    responses[item.code] = randomValue;
+  });
+};
+
 const handleSubmit = async () => {
   if (!canSubmit.value) {
     return;
@@ -143,5 +164,22 @@ onMounted(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 600px) {
+  .action-buttons {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .action-buttons :deep(.v-btn) {
+    width: auto;
+  }
 }
 </style>
