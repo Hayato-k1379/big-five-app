@@ -18,7 +18,9 @@ from .services import SurveyScoringError, create_survey_result
 
 def home(request: HttpRequest) -> HttpResponse:
     """Render the landing page."""
-    return render(request, "home.html")
+    base_url = settings.SITE_BASE_URL or request.build_absolute_uri("/")
+    context = {"site_base_url": base_url.rstrip("/")}
+    return render(request, "home.html", context)
 
 
 def survey(request: HttpRequest) -> HttpResponse:

@@ -2,7 +2,8 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/static/' : '/',
   plugins: [vue(), vuetify({ autoImport: true })],
   server: {
     port: 5173,
@@ -17,4 +18,4 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true
   }
-});
+}));
