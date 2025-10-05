@@ -82,7 +82,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
+import { apiClient } from '../lib/apiClient';
 
 const router = useRouter();
 const items = ref([]);
@@ -110,7 +110,7 @@ const fetchItems = async () => {
   loading.value = true;
   error.value = '';
   try {
-    const { data } = await axios.get('/api/items/');
+    const { data } = await apiClient.get('items/');
     items.value = data;
     data.forEach((item) => {
       responses[item.code] = null;
@@ -144,7 +144,7 @@ const handleSubmit = async () => {
     Object.entries(responses).forEach(([key, value]) => {
       payload[key] = Number(value);
     });
-    const { data } = await axios.post('/api/score/', { responses: payload });
+    const { data } = await apiClient.post('score/', { responses: payload });
     router.push({ name: 'result', params: { id: data.id }, state: { result: data } });
   } catch (err) {
     console.error(err);
