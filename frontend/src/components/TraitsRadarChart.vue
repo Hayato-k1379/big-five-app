@@ -7,6 +7,7 @@
 <script setup>
 import { computed } from 'vue';
 import { Radar } from 'vue-chartjs';
+import { useDisplay } from 'vuetify';
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -26,6 +27,8 @@ const props = defineProps({
   }
 });
 
+const display = useDisplay();
+
 const chartData = computed(() => ({
   labels: props.traitScores.map((item) => item.label),
   datasets: [
@@ -41,9 +44,60 @@ const chartData = computed(() => ({
   ]
 }));
 
+const isMobile = computed(() => display.smAndDown.value);
+
+const longestLabelLength = computed(() =>
+  props.traitScores.reduce((max, item) => Math.max(max, (item.label ?? '').length), 0)
+);
+
+const horizontalPadding = computed(() => {
+  if (isMobile.value) {
+    return longestLabelLength.value >= 5 ? 48 : 40;
+  }
+  if (longestLabelLength.value >= 7) {
+    return 72;
+  }
+  if (longestLabelLength.value >= 5) {
+    return 64;
+  }
+  return 52;
+});
+
+const pointLabelPadding = computed(() => (isMobile.value ? 8 : 12));
+const pointLabelFontSize = computed(() => (isMobile.value ? 14 : 16));
+
+const splitPointLabel = (label) => {
+  if (!label) {
+    return label;
+  }
+
+  if (label === '神経症傾向') {
+    return ['神経症', '傾向'];
+  }
+
+  if (label.includes(' ')) {
+    return label.split(' ').filter(Boolean);
+  }
+
+  return label;
+};
+
 const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
+  layout: {
+    padding: {
+      top: 24,
+      bottom: 24,
+      left: horizontalPadding.value,
+      right: horizontalPadding.value
+    }
+  },
+  plugins: {
+    legend: {
+      display: false
+    }
+  },
   scales: {
     r: {
       beginAtZero: true,
@@ -53,8 +107,11 @@ const chartOptions = computed(() => ({
         stepSize: 20
       },
       pointLabels: {
+        padding: pointLabelPadding.value,
+        callback: (label) => splitPointLabel(label),
         font: {
-          size: 16
+          size: pointLabelFontSize.value,
+          lineHeight: 1.2
         }
       }
     }

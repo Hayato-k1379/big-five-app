@@ -53,12 +53,12 @@
         </v-row>
         <section v-if="highlightCards.length" class="highlight-section mt-8">
           <h2 class="text-subtitle-1 font-weight-bold mb-4">特性ハイライト</h2>
-          <v-row class="gy-4">
+          <v-row class="gy-4 highlight-row">
             <v-col v-for="card in highlightCards" :key="card.key" cols="12" md="6">
               <v-card
                 variant="outlined"
                 class="highlight-card pa-4"
-                :style="{ borderLeft: `4px solid var(--v-theme-${card.color})` }"
+                :style="getHighlightAccentStyle(card.color)"
               >
                 <div class="d-flex align-center mb-3" style="gap: 12px;">
                   <v-chip
@@ -167,6 +167,14 @@ const tableDensity = computed(() => (isMobile.value ? 'compact' : 'comfortable')
 const chipSize = computed(() => (isMobile.value ? 'small' : 'default'));
 const scoreTextClass = computed(() => (isMobile.value ? 'text-subtitle-1' : 'text-h6'));
 
+const getHighlightAccentStyle = (color) => ({
+  '--highlight-accent': `var(--v-theme-${color ?? 'primary'})`
+});
+
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
 const displayTraits = computed(() => {
   if (!result.value) {
     return [];
@@ -255,6 +263,7 @@ onMounted(async () => {
   } else {
     loading.value = false;
   }
+  scrollToTop();
 });
 </script>
 
@@ -275,11 +284,21 @@ onMounted(async () => {
 
 .highlight-section {
   width: 100%;
+  padding-inline: 12px;
+}
+
+.highlight-row {
+  margin: 0 !important;
+}
+
+.highlight-row :deep(.v-col) {
+  padding-inline: 12px;
 }
 
 .highlight-card {
-  border-left-width: 4px !important;
+  position: relative;
   height: 100%;
+  overflow: hidden;
 }
 
 .highlight-chip {
@@ -290,9 +309,28 @@ onMounted(async () => {
   padding-block: 6px;
 }
 
+.highlight-card::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 6px;
+  background-color: var(--highlight-accent, var(--v-theme-primary));
+  border-top-left-radius: inherit;
+  border-bottom-left-radius: inherit;
+}
+
 @media (max-width: 599px) {
   .cta-sheet {
     max-width: 100%;
+  }
+
+  .highlight-section {
+    padding-inline: 8px;
+  }
+
+  .highlight-row :deep(.v-col) {
+    padding-inline: 8px;
   }
 
   .result-table :deep(td) {
