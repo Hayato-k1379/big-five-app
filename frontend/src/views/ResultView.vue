@@ -120,7 +120,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import axios from 'axios';
+import { apiClient } from '../lib/apiClient';
 import TraitsRadarChart from '../components/TraitsRadarChart.vue';
 import { useDisplay } from 'vuetify';
 
@@ -246,7 +246,7 @@ const fetchResult = async () => {
   loading.value = true;
   error.value = '';
   try {
-    const { data } = await axios.get(`/api/results/${route.params.id}/`);
+    const { data } = await apiClient.get(`results/${route.params.id}/`);
     result.value = data;
   } catch (err) {
     console.error(err);
