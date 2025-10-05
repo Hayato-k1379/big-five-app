@@ -230,14 +230,30 @@ REST_FRAMEWORK = {
     ],
 }
 
+FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "https://example.vercel.app").rstrip("/")
+
 _DEFAULT_DEV_CORS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+
+def _unique(seq: list[str]) -> list[str]:
+    seen: set[str] = set()
+    return [x for x in seq if not (x in seen or seen.add(x))]
+
+
 CORS_ALLOWED_ORIGINS = env_list("DJANGO_CORS_ALLOWED_ORIGINS")
-if not CORS_ALLOWED_ORIGINS and DEBUG:
-    CORS_ALLOWED_ORIGINS = _DEFAULT_DEV_CORS
+if not CORS_ALLOWED_ORIGINS:
+    fallback_origins: list[str] = []
+    if FRONTEND_ORIGIN:
+        fallback_origins.append(FRONTEND_ORIGIN)
+    if DEBUG:
+        fallback_origins.extend(_DEFAULT_DEV_CORS)
+    CORS_ALLOWED_ORIGINS = _unique(fallback_origins)
 CORS_ALLOW_CREDENTIALS = env_bool("DJANGO_CORS_ALLOW_CREDENTIALS", default=False)
+
+if FRONTEND_ORIGIN and FRONTEND_ORIGIN not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append(FRONTEND_ORIGIN)
 
 
 USE_X_FORWARDED_HOST = True
