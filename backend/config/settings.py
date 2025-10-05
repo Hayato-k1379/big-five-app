@@ -123,6 +123,13 @@ def database_config_from_env() -> dict:
 
     default_sqlite = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
 
+    def _force_sqlite_config() -> dict:
+        return {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+            "CONN_MAX_AGE": conn_max_age,
+        }
+
     if dj_database_url is not None:
         parsed_config = dj_database_url.config(
             default=url or default_sqlite,
@@ -130,14 +137,16 @@ def database_config_from_env() -> dict:
             ssl_require=ssl_required,
         )
         if parsed_config:
+            engine = parsed_config.get("ENGINE")
+            if engine == "django.db.backends.sqlite3":
+                return _force_sqlite_config()
+            options = parsed_config.get("OPTIONS")
+            if isinstance(options, dict) and "sslmode" in options:
+                options.pop("sslmode", None)
             return parsed_config
 
     if not url:
-        return {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-            "CONN_MAX_AGE": conn_max_age,
-        }
+        return _force_sqlite_config()
 
     parsed = urlparse(url)
     scheme = parsed.scheme.lower()
@@ -157,7 +166,7 @@ def database_config_from_env() -> dict:
     }
 
     if engine == "django.db.backends.sqlite3":
-        config["NAME"] = _absolute_sqlite_path(parsed)
+        return _force_sqlite_config()
     else:
         config["NAME"] = parsed.path.lstrip("/")
         if not config["NAME"]:
