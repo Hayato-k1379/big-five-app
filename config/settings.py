@@ -3,12 +3,58 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from urllib.parse import urlsplit, urlparse, unquote
+
+from django.core.exceptions import ImproperlyConfigured
+
+try:
+    import dj_database_url
+except ImportError:  # pragma: no cover - fallback when library missing locally
+    dj_database_url = None
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-change-me"
-DEBUG = True
-ALLOWED_HOSTS: list[str] = []
+
+def env_bool(name: str, default: bool = False) -> bool:
+    """Return a boolean for the environment variable ``name``."""
+
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    return raw.lower() in {"1", "true", "yes", "on"}
+
+
+def env_list(name: str, default: list[str] | None = None, separator: str = ",") -> list[str]:
+    """Split a comma-separated environment variable into a list."""
+
+    raw = os.environ.get(name)
+    if not raw:
+        return default or []
+    return [item.strip() for item in raw.split(separator) if item.strip()]
+
+
+DEBUG = env_bool("DJANGO_DEBUG", default=False)
+
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = "django-insecure-change-me"
+    else:
+        raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set when DEBUG is False.")
+
+ALLOWED_HOSTS: list[str] = env_list("DJANGO_ALLOWED_HOSTS", ["*"])
+CSRF_TRUSTED_ORIGINS: list[str] = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
+
+SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "").rstrip("/")
+if SITE_BASE_URL:
+    parsed_site = urlsplit(SITE_BASE_URL)
+    if parsed_site.scheme and parsed_site.netloc:
+        origin = f"{parsed_site.scheme}://{parsed_site.netloc}"
+        if origin not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(origin)
+        host = parsed_site.hostname
+        if host and host not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(host)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -25,6 +71,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -55,12 +102,82 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+def _absolute_sqlite_path(parsed_url) -> str:
+    if parsed_url.path in {"", "/"}:
+        return ":memory:"
+    if parsed_url.netloc:
+        # Handles sqlite:///var/db.sqlite3 (netloc empty) vs sqlite:////absolute/path
+        path = f"//{parsed_url.netloc}{parsed_url.path}"
+    else:
+        path = parsed_url.path
+    return os.path.abspath(os.path.join("/", path.lstrip("/")))
+
+
+def database_config_from_env() -> dict:
+    """Return Django DATABASES['default'] configuration from env vars."""
+
+    url = os.environ.get("DATABASE_URL") or os.environ.get("DJANGO_DATABASE_URL")
+    conn_max_age = int(os.environ.get("DJANGO_DB_CONN_MAX_AGE", "600") or "600")
+    ssl_required = env_bool("DJANGO_DB_SSL_REQUIRED", default=not DEBUG)
+
+    default_sqlite = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+
+    if dj_database_url is not None:
+        parsed_config = dj_database_url.config(
+            default=url or default_sqlite,
+            conn_max_age=conn_max_age,
+            ssl_require=ssl_required,
+        )
+        if parsed_config:
+            return parsed_config
+
+    if not url:
+        return {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+            "CONN_MAX_AGE": conn_max_age,
+        }
+
+    parsed = urlparse(url)
+    scheme = parsed.scheme.lower()
+
+    if scheme in {"postgres", "postgresql", "postgresql_psycopg2"}:
+        engine = "django.db.backends.postgresql"
+    elif scheme in {"mysql"}:
+        engine = "django.db.backends.mysql"
+    elif scheme in {"sqlite", "sqlite3"}:
+        engine = "django.db.backends.sqlite3"
+    else:
+        raise ImproperlyConfigured(f"Unsupported database scheme '{parsed.scheme}'.")
+
+    config: dict[str, object] = {
+        "ENGINE": engine,
+        "CONN_MAX_AGE": conn_max_age,
     }
-}
+
+    if engine == "django.db.backends.sqlite3":
+        config["NAME"] = _absolute_sqlite_path(parsed)
+    else:
+        config["NAME"] = parsed.path.lstrip("/")
+        if not config["NAME"]:
+            raise ImproperlyConfigured("Database name must be provided in DATABASE_URL.")
+        if parsed.hostname:
+            config["HOST"] = parsed.hostname
+        if parsed.port:
+            config["PORT"] = parsed.port
+        if parsed.username:
+            config["USER"] = unquote(parsed.username)
+        if parsed.password:
+            config["PASSWORD"] = unquote(parsed.password)
+        if ssl_required:
+            options = config.setdefault("OPTIONS", {})
+            if isinstance(options, dict):
+                options.setdefault("sslmode", "require")
+
+    return config
+
+
+DATABASES = {"default": database_config_from_env()}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -82,16 +199,19 @@ TIME_ZONE = "Asia/Tokyo"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "/static/"
+STATIC_URL = os.environ.get("DJANGO_STATIC_URL", "/static/")
+if not STATIC_URL.endswith("/"):
+    STATIC_URL += "/"
+
 STATICFILES_DIRS = [BASE_DIR / "static"]
 FRONTEND_DIST_DIR = BASE_DIR / "frontend" / "dist"
 if FRONTEND_DIST_DIR.exists():
     STATICFILES_DIRS.append(FRONTEND_DIST_DIR)
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-NOTE_DETAIL_URL = os.getenv("NOTE_DETAIL_URL", "https://note.com/your_account/n/xxxxxxxx")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+NOTE_DETAIL_URL = os.environ.get("NOTE_DETAIL_URL", "https://note.com/your_account/n/xxxxxxxx")
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
@@ -99,7 +219,34 @@ REST_FRAMEWORK = {
     ],
 }
 
-CORS_ALLOWED_ORIGINS = [
+_DEFAULT_DEV_CORS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+CORS_ALLOWED_ORIGINS = env_list("DJANGO_CORS_ALLOWED_ORIGINS")
+if not CORS_ALLOWED_ORIGINS and DEBUG:
+    CORS_ALLOWED_ORIGINS = _DEFAULT_DEV_CORS
+CORS_ALLOW_CREDENTIALS = env_bool("DJANGO_CORS_ALLOW_CREDENTIALS", default=False)
+
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+SECURE_SSL_REDIRECT = env_bool("DJANGO_SECURE_SSL_REDIRECT", default=not DEBUG)
+SESSION_COOKIE_SECURE = env_bool("DJANGO_SESSION_COOKIE_SECURE", default=not DEBUG)
+CSRF_COOKIE_SECURE = env_bool("DJANGO_CSRF_COOKIE_SECURE", default=not DEBUG)
+SECURE_HSTS_SECONDS = int(
+    os.environ.get("DJANGO_SECURE_HSTS_SECONDS", "0" if DEBUG else "31536000")
+    or ("0" if DEBUG else "31536000")
+)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env_bool(
+    "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS",
+    default=not DEBUG,
+)
+SECURE_HSTS_PRELOAD = env_bool("DJANGO_SECURE_HSTS_PRELOAD", default=False)
+SECURE_REFERRER_POLICY = os.environ.get(
+    "DJANGO_SECURE_REFERRER_POLICY", "strict-origin-when-cross-origin"
+)
+X_FRAME_OPTIONS = os.environ.get("DJANGO_X_FRAME_OPTIONS", "DENY")
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
