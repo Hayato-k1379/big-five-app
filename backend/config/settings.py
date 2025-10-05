@@ -13,6 +13,7 @@ except ImportError:  # pragma: no cover - fallback when library missing locally
     dj_database_url = None
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = BASE_DIR.parent
 
 
 def env_bool(name: str, default: bool = False) -> bool:
@@ -204,7 +205,7 @@ if not STATIC_URL.endswith("/"):
     STATIC_URL += "/"
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
-FRONTEND_DIST_DIR = BASE_DIR / "frontend" / "dist"
+FRONTEND_DIST_DIR = PROJECT_ROOT / "frontend" / "dist"
 if FRONTEND_DIST_DIR.exists():
     STATICFILES_DIRS.append(FRONTEND_DIST_DIR)
 STATIC_ROOT = BASE_DIR / "staticfiles"
