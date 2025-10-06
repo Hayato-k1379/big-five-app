@@ -35,7 +35,7 @@ def env_list(name: str, default: list[str] | None = None, separator: str = ",") 
     return [item.strip() for item in raw.split(separator) if item.strip()]
 
 
-DEBUG = env_bool("DJANGO_DEBUG", default=False)
+DEBUG = env_bool("DJANGO_DEBUG", default=True)
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 if not SECRET_KEY:
