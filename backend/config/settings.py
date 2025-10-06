@@ -266,6 +266,22 @@ CORS_ALLOW_CREDENTIALS = env_bool("DJANGO_CORS_ALLOW_CREDENTIALS", default=False
 if FRONTEND_ORIGIN and FRONTEND_ORIGIN not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append(FRONTEND_ORIGIN)
 
+CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.*\\.vercel\\.app$"]
+
+# Ensure well-known Vercel deployments are whitelisted even without env vars.
+_DEFAULT_DEPLOYED_ORIGINS = _unique(
+    [
+        "https://big-five-app-git-main-hayatokimuras-projects.vercel.app",
+        "https://big-five-app.vercel.app",
+    ]
+)
+
+for origin in _DEFAULT_DEPLOYED_ORIGINS:
+    if origin not in CORS_ALLOWED_ORIGINS:
+        CORS_ALLOWED_ORIGINS.append(origin)
+    if origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(origin)
+
 
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
