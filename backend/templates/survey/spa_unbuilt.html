@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}メンテナンス中{% endblock %}
+
+{% block content %}
+  <div class="text-center py-5">
+    <h2 class="mb-3">フロントエンドのビルドがまだ配置されていません</h2>
+    <p class="mb-4">
+      現在ご覧いただいているアプリ版の画面は、フロントエンドのビルドが完了すると利用できるようになります。
+    </p>
+    <p class="mb-4">
+      デプロイ担当の方は <code>npm install</code> と <code>npm run build</code> を実行したうえで、生成された
+      <code>frontend/dist</code> ディレクトリを Render 側に配置してください。
+    </p>
+    <a class="btn btn-primary" href="{% url 'survey:home' %}">トップページに戻る</a>
+  </div>
+{% endblock %}

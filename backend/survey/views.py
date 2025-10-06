@@ -88,10 +88,10 @@ def spa_entry(request: HttpRequest) -> HttpResponse:
 
     index_path = settings.FRONTEND_DIST_DIR / "index.html"
     if not index_path.exists():
-        return HttpResponse(
-            "フロントエンドのビルドがまだ実行されていません。`npm run build` 後に再度アクセスしてください。",
-            content_type="text/plain",
-            status=503,
+        return render(
+            request,
+            "survey/spa_unbuilt.html",
+            status=200,
         )
 
     return HttpResponse(index_path.read_text(encoding="utf-8"), content_type="text/html")
