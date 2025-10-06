@@ -47,6 +47,7 @@ if not SECRET_KEY:
 ALLOWED_HOSTS: list[str] = env_list("DJANGO_ALLOWED_HOSTS", ["*"])
 CSRF_TRUSTED_ORIGINS: list[str] = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 
+
 SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "").rstrip("/")
 if SITE_BASE_URL:
     parsed_site = urlsplit(SITE_BASE_URL)
@@ -240,6 +241,14 @@ def _normalize_origin(raw: str) -> str:
 
 
 FRONTEND_ORIGIN = _normalize_origin(os.environ.get("FRONTEND_ORIGIN", "https://example.vercel.app"))
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+if RENDER_EXTERNAL_HOSTNAME:
+    if RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+    render_origin = _normalize_origin(f"https://{RENDER_EXTERNAL_HOSTNAME}")
+    if render_origin and render_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(render_origin)
 
 _DEFAULT_DEV_CORS = [
     "http://localhost:5173",
