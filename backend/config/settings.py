@@ -230,7 +230,16 @@ REST_FRAMEWORK = {
     ],
 }
 
-FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "https://example.vercel.app").rstrip("/")
+def _normalize_origin(raw: str) -> str:
+    candidate = raw.strip()
+    if not candidate:
+        return ""
+    if "://" not in candidate:
+        candidate = f"https://{candidate}"
+    return candidate.rstrip("/")
+
+
+FRONTEND_ORIGIN = _normalize_origin(os.environ.get("FRONTEND_ORIGIN", "https://example.vercel.app"))
 
 _DEFAULT_DEV_CORS = [
     "http://localhost:5173",
@@ -242,7 +251,9 @@ def _unique(seq: list[str]) -> list[str]:
     return [x for x in seq if not (x in seen or seen.add(x))]
 
 
-CORS_ALLOWED_ORIGINS = env_list("DJANGO_CORS_ALLOWED_ORIGINS")
+CORS_ALLOWED_ORIGINS = _unique(
+    [origin for origin in (_normalize_origin(o) for o in env_list("DJANGO_CORS_ALLOWED_ORIGINS")) if origin]
+)
 if not CORS_ALLOWED_ORIGINS:
     fallback_origins: list[str] = []
     if FRONTEND_ORIGIN:
