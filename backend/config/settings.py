@@ -253,6 +253,8 @@ if RENDER_EXTERNAL_HOSTNAME:
 _DEFAULT_DEV_CORS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:4173",
+    "http://127.0.0.1:4173",
 ]
 
 def _unique(seq: list[str]) -> list[str]:
