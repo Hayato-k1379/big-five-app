@@ -179,7 +179,11 @@ const displayTraits = computed(() => {
   if (!result.value) {
     return [];
   }
-  return result.value.trait_scores.map((trait) => {
+  const traitSource = Array.isArray(result.value.trait_scores) ? result.value.trait_scores : [];
+  if (!Array.isArray(result.value.trait_scores)) {
+    console.error('[ResultView] trait_scores is not an array', result.value.trait_scores);
+  }
+  return traitSource.map((trait) => {
     const displayScore = trait.display_score ?? trait.scaled;
     const level = getLevelInfo(displayScore);
     return {
@@ -242,12 +246,26 @@ const highlightCards = computed(() => {
   return cards;
 });
 
+const normalizeResultPayload = (payload) => {
+  if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
+    return payload;
+  }
+  console.error('[ResultView] Unexpected result payload', payload);
+  return null;
+};
+
 const fetchResult = async () => {
   loading.value = true;
   error.value = '';
   try {
     const { data } = await apiClient.get(`results/${route.params.id}/`);
-    result.value = data;
+    const normalized = normalizeResultPayload(data);
+    if (!normalized) {
+      error.value = '結果データの取得形式が不正でした。時間をおいて再試行してください。';
+      result.value = null;
+      return;
+    }
+    result.value = normalized;
   } catch (err) {
     console.error(err);
     error.value = '結果の取得に失敗しました。URLをご確認のうえ再試行してください。';

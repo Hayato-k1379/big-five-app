@@ -82,7 +82,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { apiClient } from '../lib/apiClient';
+import { apiClient, ensureArray } from '../lib/apiClient';
 
 const router = useRouter();
 const items = ref([]);
@@ -111,8 +111,9 @@ const fetchItems = async () => {
   error.value = '';
   try {
     const { data } = await apiClient.get('items/');
-    items.value = data;
-    data.forEach((item) => {
+    const normalizedItems = ensureArray(data, 'items response');
+    items.value = normalizedItems;
+    normalizedItems.forEach((item) => {
       responses[item.code] = null;
     });
   } catch (err) {
