@@ -240,7 +240,20 @@ def _normalize_origin(raw: str) -> str:
     return candidate.rstrip("/")
 
 
-FRONTEND_ORIGIN = _normalize_origin(os.environ.get("FRONTEND_ORIGIN", "https://example.vercel.app"))
+def _unique(seq: list[str]) -> list[str]:
+    seen: set[str] = set()
+    return [x for x in seq if not (x in seen or seen.add(x))]
+
+
+_raw_frontend_origin = os.environ.get("FRONTEND_ORIGIN", "")
+FRONTEND_ORIGINS = _unique(
+    [origin for origin in (_normalize_origin(o) for o in _raw_frontend_origin.split(",")) if origin]
+)
+
+if not FRONTEND_ORIGINS:
+    FRONTEND_ORIGINS = [_normalize_origin("https://example.vercel.app")]
+
+FRONTEND_ORIGIN = FRONTEND_ORIGINS[0]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
@@ -257,25 +270,26 @@ _DEFAULT_DEV_CORS = [
     "http://127.0.0.1:4173",
 ]
 
-def _unique(seq: list[str]) -> list[str]:
-    seen: set[str] = set()
-    return [x for x in seq if not (x in seen or seen.add(x))]
-
 
 CORS_ALLOWED_ORIGINS = _unique(
     [origin for origin in (_normalize_origin(o) for o in env_list("DJANGO_CORS_ALLOWED_ORIGINS")) if origin]
 )
 if not CORS_ALLOWED_ORIGINS:
     fallback_origins: list[str] = []
-    if FRONTEND_ORIGIN:
-        fallback_origins.append(FRONTEND_ORIGIN)
+    if FRONTEND_ORIGINS:
+        fallback_origins.extend(FRONTEND_ORIGINS)
     if DEBUG:
         fallback_origins.extend(_DEFAULT_DEV_CORS)
     CORS_ALLOWED_ORIGINS = _unique(fallback_origins)
 CORS_ALLOW_CREDENTIALS = env_bool("DJANGO_CORS_ALLOW_CREDENTIALS", default=False)
 
-if FRONTEND_ORIGIN and FRONTEND_ORIGIN not in CSRF_TRUSTED_ORIGINS:
-    CSRF_TRUSTED_ORIGINS.append(FRONTEND_ORIGIN)
+for origin in FRONTEND_ORIGINS:
+    if origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(origin)
+
+for origin in FRONTEND_ORIGINS:
+    if origin not in CORS_ALLOWED_ORIGINS:
+        CORS_ALLOWED_ORIGINS.append(origin)
 
 CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.*\\.vercel\\.app$"]
 
