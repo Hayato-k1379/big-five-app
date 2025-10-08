@@ -85,13 +85,12 @@ def _build_question_fields(form: SurveyForm, items: list[PersonalityItem]) -> li
 
 def spa_entry(request: HttpRequest) -> HttpResponse:
     """Serve the built Vue application for /app routes."""
+    if settings.FRONTEND_ORIGIN:
+        redirect_url = f"{settings.FRONTEND_ORIGIN}{request.get_full_path()}"
+        return redirect(redirect_url)
 
-    index_path = settings.FRONTEND_DIST_DIR / "index.html"
-    if not index_path.exists():
-        return render(
-            request,
-            "survey/spa_unbuilt.html",
-            status=200,
-        )
-
-    return HttpResponse(index_path.read_text(encoding="utf-8"), content_type="text/html")
+    return render(
+        request,
+        "survey/spa_unbuilt.html",
+        status=200,
+    )

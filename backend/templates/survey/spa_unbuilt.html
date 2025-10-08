@@ -4,13 +4,13 @@
 
 {% block content %}
   <div class="text-center py-5">
-    <h2 class="mb-3">フロントエンドのビルドがまだ配置されていません</h2>
+    <h2 class="mb-3">テスト画面は別ドメインで提供しています</h2>
     <p class="mb-4">
-      現在ご覧いただいているアプリ版の画面は、フロントエンドのビルドが完了すると利用できるようになります。
+      この Render 環境では SPA を直接配信していません。フロントエンドの URL を環境変数
+      <code>FRONTEND_ORIGIN</code> に設定すると、自動的にそちらへリダイレクトされます。
     </p>
     <p class="mb-4">
-      デプロイ担当の方は <code>npm install</code> と <code>npm run build</code> を実行したうえで、生成された
-      <code>frontend/dist</code> ディレクトリを Render 側に配置してください。
+      設定例: <code>https://big-five-app.vercel.app</code>
     </p>
     <a class="btn btn-primary" href="{% url 'survey:home' %}">トップページに戻る</a>
   </div>
