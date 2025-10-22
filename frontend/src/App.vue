@@ -1,29 +1,56 @@
 <template>
-  <v-app>
-    <v-app-bar color="primary" density="comfortable" flat class="text-white">
-      <v-app-bar-title>Big Five 50問テスト</v-app-bar-title>
+  <v-app class="app-shell">
+    <v-app-bar color="primary" density="comfortable" flat class="app-header">
+      <v-app-bar-title class="app-title">Big Five 50問テスト</v-app-bar-title>
       <v-spacer />
       <RouterLink class="app-link" :to="{ name: 'survey' }">
-        <v-btn variant="text" class="text-white">テストを開始</v-btn>
+        <v-btn variant="text" class="app-link__button">テストを開始</v-btn>
       </RouterLink>
     </v-app-bar>
 
-    <v-main>
+    <v-main class="app-main">
       <router-view />
     </v-main>
 
-    <v-footer app height="72" class="d-flex align-center justify-center">
-      <span>IPIPの項目はパブリックドメインです。</span>
-    </v-footer>
+    <AppFooter />
   </v-app>
 </template>
 
 <script setup>
 import { RouterLink } from 'vue-router';
+import AppFooter from './components/layout/Footer.vue';
 </script>
 
 <style scoped>
+.app-shell {
+  background-color: var(--app-background);
+  color: var(--app-text);
+  font-family: var(--app-font-family);
+}
+
+.app-header {
+  color: #fff;
+  background: linear-gradient(135deg, var(--app-accent), var(--app-accent-strong));
+  letter-spacing: 0.08em;
+}
+
+.app-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.app-main {
+  background-color: transparent;
+}
+
 .app-link {
   text-decoration: none;
+}
+
+.app-link__button {
+  color: #fff;
+  text-transform: none;
+  font-weight: 600;
+  letter-spacing: 0.08em;
 }
 </style>

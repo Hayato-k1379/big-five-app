@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>特定商取引法に基づく表記｜Big-Five-App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#F7F4EF;
+      --accent:#C34A2C;
+      --text:#3C3630;
+      --muted:#6C645D;
+      --radius:18px;
+      --maxw:920px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    a{color:var(--accent);text-decoration:none}
+    header.site{
+      position:sticky;top:0;z-index:10;
+      backdrop-filter:saturate(1.2) blur(8px);
+      background:color-mix(in oklab, var(--bg) 86%, white);
+      border-bottom:1px solid color-mix(in oklab, var(--bg) 70%, #0000);
+    }
+    header .inner{max-width:var(--maxw);margin:auto;display:flex;align-items:center;justify-content:space-between;padding:10px 20px}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{
+      width:28px;height:28px;border-radius:8px;
+      background:radial-gradient(120px 60px at 70% 30%, rgba(255,255,255,.9), rgba(255,255,255,0)),
+                 radial-gradient(240px 160px at 0% 100%, rgba(195,74,44,.6), rgba(195,74,44,0));
+      outline:1px solid rgba(60,54,48,.14);
+      background-color:var(--bg);
+    }
+    .brand h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.04em}
+    main{max-width:var(--maxw);margin:auto;padding:28px 20px 64px}
+    h2{font-size:clamp(22px,4vw,32px);margin:14px 0 8px;line-height:1.35}
+    table{width:100%;border-collapse:separate;border-spacing:0 10px}
+    th,td{vertical-align:top;text-align:left}
+    th{width:32%;color:var(--muted);font-weight:700;padding:12px 14px}
+    td{padding:12px 14px;background:#fff;border:1px solid rgba(60,54,48,.08);border-radius:12px;box-shadow:0 2px 24px rgba(0,0,0,.04)}
+    .muted{color:var(--muted)}
+    footer{padding:48px 20px;border-top:1px solid rgba(60,54,48,.08);color:var(--muted)}
+    .back{display:inline-block;margin-top:16px;padding:10px 16px;border-radius:999px;border:2px solid var(--accent);color:var(--accent);font-weight:700}
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <h1>Big-Five-App</h1>
+      </div>
+      <nav><a href="Big-Five-App_LP_UI_Mock_FULL_LEGAL.html">LPに戻る</a></nav>
+    </div>
+  </header>
+
+  <main>
+    <h2>特定商取引法に基づく表記</h2>
+    <table aria-label="特定商取引法表記">
+      <tr><th>販売事業者</th><td>（記入例：希望の再設計プロジェクト）</td></tr>
+      <tr><th>運営統括責任者</th><td>（記入例：木村 隼人）</td></tr>
+      <tr><th>所在地</th><td>（記入例：東京都〇〇区〇〇 1-2-3）※請求があれば遅滞なく開示</td></tr>
+      <tr><th>連絡先</th><td>（記入例：support@example.com）土日祝を除く 10:00–18:00</td></tr>
+      <tr><th>販売URL</th><td>（記入例：https://example.com ）</td></tr>
+      <tr><th>販売価格</th><td>各商品ページに税込価格を表示。サブスクリプションの場合は月額・年額を明記。</td></tr>
+      <tr><th>商品代金以外の必要料金</th><td>インターネット接続料金、通信料、銀行振込手数料等はお客様負担。</td></tr>
+      <tr><th>お支払い方法</th><td>クレジットカード／デビットカード／各種決済サービス（導入時に追記）。</td></tr>
+      <tr><th>お支払い時期</th><td>購入時に即時決済。サブスクは契約更新日に自動決済。</td></tr>
+      <tr><th>商品の引き渡し時期</th><td>デジタル商品は決済完了後、即時またはアカウント有効化後に提供。</td></tr>
+      <tr><th>返品・キャンセル</th><td>デジタル商品の性質上、原則として返品・返金は受け付けません。二重課金・明らかな不具合等は個別に対応。</td></tr>
+      <tr><th>中途解約（サブスク）</th><td>いつでも解約可能。解約は次回更新日以降の課金を停止。日割り精算は行いません。</td></tr>
+      <tr><th>動作環境</th><td>最新のモダンブラウザを推奨。動作環境により一部機能が利用できない場合があります。</td></tr>
+      <tr><th>表現および商品に関する注意書き</th><td>診断結果は個人差があり、効果・成果を保証するものではありません。</td></tr>
+      <tr><th>クーリング・オフについて</th><td>本サービスは通信販売に該当し、クーリング・オフ制度の適用外です。</td></tr>
+      <tr><th>個人情報の取り扱い</th><td>当方の<a href="privacy.html">プライバシーポリシー</a>に従います。</td></tr>
+    </table>
+
+    <p class="muted" style="margin-top:12px">最終改定日：2025-10-21</p>
+    <a class="back" href="Big-Five-App_LP_UI_Mock_FULL_LEGAL.html">LPに戻る</a>
+  </main>
+
+  <footer>
+    <div style="max-width:var(--maxw);margin:auto">© 2025 希望の再設計プロジェクト / Big-Five-App</div>
+  </footer>
+</body>
+</html>

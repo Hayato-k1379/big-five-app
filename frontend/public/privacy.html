@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>プライバシーポリシー｜Big-Five-App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#F7F4EF;
+      --accent:#C34A2C;
+      --text:#3C3630;
+      --muted:#6C645D;
+      --radius:18px;
+      --maxw:920px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    a{color:var(--accent);text-decoration:none}
+    header.site{
+      position:sticky;top:0;z-index:10;
+      backdrop-filter:saturate(1.2) blur(8px);
+      background:color-mix(in oklab, var(--bg) 86%, white);
+      border-bottom:1px solid color-mix(in oklab, var(--bg) 70%, #0000);
+    }
+    header .inner{max-width:var(--maxw);margin:auto;display:flex;align-items:center;justify-content:space-between;padding:10px 20px}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{
+      width:28px;height:28px;border-radius:8px;
+      background:radial-gradient(120px 60px at 70% 30%, rgba(255,255,255,.9), rgba(255,255,255,0)),
+                 radial-gradient(240px 160px at 0% 100%, rgba(195,74,44,.6), rgba(195,74,44,0));
+      outline:1px solid rgba(60,54,48,.14);
+      background-color:var(--bg);
+    }
+    .brand h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.04em}
+    main{max-width:var(--maxw);margin:auto;padding:28px 20px 64px}
+    h2{font-size:clamp(22px,4vw,32px);margin:14px 0 8px;line-height:1.35}
+    h3{font-size:18px;margin:22px 0 8px}
+    p{line-height:1.9;margin:8px 0;color:var(--text)}
+    .lead{color:var(--muted)}
+    .card{border-radius:var(--radius);padding:22px;background:#fff;box-shadow:0 2px 24px rgba(0,0,0,.06);border:1px solid rgba(60,54,48,.08)}
+    .muted{color:var(--muted)}
+    ul{line-height:1.9;margin:6px 0 6px 22px;color:var(--text)}
+    footer{padding:48px 20px;border-top:1px solid rgba(60,54,48,.08);color:var(--muted)}
+    .back{display:inline-block;margin-top:16px;padding:10px 16px;border-radius:999px;border:2px solid var(--accent);color:var(--accent);font-weight:700}
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <h1>Big-Five-App</h1>
+      </div>
+      <nav><a href="Big-Five-App_LP_UI_Mock.html">LPに戻る</a></nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>プライバシーポリシー（診断アプリ用）</h2>
+      <p class="lead">本ポリシーは、自己分析診断アプリ「Big-Five-App」（以下「本アプリ」）における個人情報等の取り扱いについて定めるものです。静かな体験を損なわないよう、最小限で明確な取り扱いを行います。</p>
+
+      <h3>第1条（適用範囲）</h3>
+      <p>本ポリシーは、本アプリおよび本アプリが運営する関連Webページ上で取得・管理される情報に適用されます。</p>
+
+      <h3>第2条（取得する情報）</h3>
+      <ul>
+        <li>アカウント情報（メールアドレス、ニックネーム等）※登録時のみ</li>
+        <li>診断回答データ（質問への選択肢、回答時刻）</li>
+        <li>分析結果データ（各特性スコア、強弱抽出、生成されたPDF）</li>
+        <li>技術情報（IPアドレス、Cookie、ブラウザ情報、リファラ等）</li>
+        <li>利用ログ（アクセス日時、操作履歴、エラー情報等）</li>
+      </ul>
+
+      <h3>第3条（取得方法）</h3>
+      <p>情報は、利用者による入力、アプリの自動取得（Cookie等）、およびエラーログの収集により取得します。外部から名簿等を取得することはありません。</p>
+
+      <h3>第4条（利用目的）</h3>
+      <ul>
+        <li>診断の提供、結果の表示およびPDF出力</li>
+        <li>アカウント管理、本人確認、問い合わせ対応</li>
+        <li>機能改善、品質向上、障害対応、セキュリティ対策</li>
+        <li>統計的な分析（個人が特定されない形での集計・可視化）</li>
+        <li>不正利用の防止および法令遵守</li>
+      </ul>
+
+      <h3>第5条（法的根拠）</h3>
+      <p>本アプリは、日本法（個人情報保護法）に準拠します。EU/EEAの居住者に対してサービスを提供する場合は、GDPRに基づき、契約履行、正当な利益、同意等を根拠として処理を行います。</p>
+
+      <h3>第6条（Cookie等）</h3>
+      <p>本アプリは、セッション管理、ログイン状態の維持、利用状況の把握のためにCookieや類似技術を使用します。ブラウザ設定によりCookieを無効化できますが、一部機能が動作しない場合があります。</p>
+
+      <h3>第7条（アクセス解析等の第三者ツール）</h3>
+      <p>利便性向上のため、アクセス解析ツールやエラートラッキングツールを用いる場合があります。これらのツール提供者に対して、識別子や利用ログが送信されることがあります。使用するツール名称やオプトアウト方法は、導入時に本ページに追記します。</p>
+
+      <h3>第8条（第三者提供）</h3>
+      <p>次の場合を除き、個人情報を第三者に提供しません。</p>
+      <ul>
+        <li>本人の同意がある場合</li>
+        <li>法令に基づく場合</li>
+        <li>人の生命・身体・財産の保護のために必要で、本人の同意取得が困難な場合</li>
+      </ul>
+
+      <h3>第9条（委託）</h3>
+      <p>本アプリの運用に必要な範囲で、クラウドサービス等の業務委託先に個人情報の取り扱いを委託することがあります。委託先は適切な管理体制を有する事業者を選定し、契約等により安全管理措置を求めます。</p>
+
+      <h3>第10条（国外への移転）</h3>
+      <p>クラウドサービスの利用に伴い、国外のサーバにデータが保存されることがあります。その場合、日本法および適用される地域の法令に従い、適切な保護措置を講じます。</p>
+
+      <h3>第11条（保存期間）</h3>
+      <p>アカウントに紐づく情報は、退会手続き完了後、合理的な期間をもって削除します。ログおよびバックアップは、運用・セキュリティの観点から一定期間保持した後、削除します。</p>
+
+      <h3>第12条（安全管理措置）</h3>
+      <ul>
+        <li>通信の暗号化（HTTPS）</li>
+        <li>アクセス権限管理、認証情報の安全な保管</li>
+        <li>脆弱性対策、監視、バックアップ</li>
+        <li>利用状況の監査（不正アクセス検知）</li>
+      </ul>
+
+      <h3>第13条（利用者の権利）</h3>
+      <p>利用者は、保有個人データの開示、訂正、追加、削除、利用停止等を求めることができます。問い合わせ先は本ページ末尾をご参照ください。GDPRが適用される場合、異議申立て、処理制限、データポータビリティ等の権利も行使できます。</p>
+
+      <h3>第14条（未成年の利用）</h3>
+      <p>未成年が利用する場合、保護者の同意を取得した上で利用してください。</p>
+
+      <h3>第15条（外部リンク）</h3>
+      <p>本アプリからリンクする外部サイトにおける個人情報の取り扱いについて、当方は責任を負いません。各サイトのポリシーをご確認ください。</p>
+
+      <h3>第16条（ポリシーの変更）</h3>
+      <p>本ポリシーの内容は、法令改正やサービス内容の変更に応じて、事前の告知なく改定することがあります。重要な変更がある場合は、アプリ内またはWebページで通知します。</p>
+
+      <h3>第17条（お問い合わせ窓口）</h3>
+      <p>個人情報の取り扱いに関するご質問・各種請求は、以下にご連絡ください。</p>
+      <ul>
+        <li>事業者名：<span class="muted">（記入例：希望の再設計プロジェクト）</span></li>
+        <li>担当部署：<span class="muted">（記入例：データ保護担当）</span></li>
+        <li>メール：<span class="muted">（記入例：privacy@example.com）</span></li>
+        <li>住所：<span class="muted">（任意で記載）</span></li>
+      </ul>
+
+      <p class="muted">最終改定日：2025-10-21</p>
+      <a class="back" href="Big-Five-App_LP_UI_Mock.html">LPに戻る</a>
+    </div>
+  </main>
+
+  <footer>
+    <div style="max-width:var(--maxw);margin:auto">© 2025 希望の再設計プロジェクト / Big-Five-App</div>
+  </footer>
+</body>
+</html>

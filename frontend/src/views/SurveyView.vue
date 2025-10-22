@@ -1,5 +1,5 @@
 <template>
-  <v-container class="py-8" max-width="960">
+  <v-container class="survey-container" max-width="960">
     <v-alert type="error" v-if="error" class="mb-4">{{ error }}</v-alert>
 
     <v-sheet v-if="loading" class="py-12 d-flex justify-center">
@@ -7,34 +7,35 @@
     </v-sheet>
 
     <template v-else>
-      <v-card elevation="2">
-        <v-card-title class="d-flex flex-column align-start">
-          <h1 class="text-h5 font-weight-bold mb-2">50問に回答してビッグファイブ診断を受けましょう</h1>
-          <p class="text-body-2 mb-0">すべて必須です。感じたままに5段階でお答えください。</p>
+      <v-card elevation="0" class="survey-card">
+        <v-card-title class="survey-card__header">
+          <h1 class="survey-title">静けさの中で、自分を観察する時間を。</h1>
+          <p class="survey-subtitle">50の問いを通じて、今のあなたを静かに映し出します。すべて必須です。</p>
         </v-card-title>
 
-        <v-card-text>
+        <v-card-text class="survey-card__body">
           <v-progress-linear
             :model-value="progress"
             color="primary"
             height="10"
             rounded
-            class="mb-6"
+            class="survey-progress"
           ></v-progress-linear>
 
-          <small class="text-caption">回答済み {{ answeredCount }} / {{ totalItems }} 問 ({{ progress }}%)</small>
+          <small class="survey-progress__label">回答済み {{ answeredCount }} / {{ totalItems }} 問 ({{ progress }}%)</small>
 
-          <v-divider class="my-6"></v-divider>
+          <v-divider class="survey-divider"></v-divider>
 
           <v-form @submit.prevent="handleSubmit" class="survey-form">
-            <div class="d-flex flex-column gap-6">
+            <div class="survey-items">
               <v-card
                 v-for="item in items"
                 :key="item.code"
                 variant="outlined"
+                class="survey-item-card"
               >
-                <v-card-text>
-                  <div class="text-subtitle-1 font-weight-medium mb-4">{{ item.text }}</div>
+                <v-card-text class="survey-item-card__body">
+                  <div class="survey-question">{{ item.text }}</div>
                   <v-radio-group
                     v-model="responses[item.code]"
                     inline
@@ -51,7 +52,7 @@
               </v-card>
             </div>
 
-            <div class="action-buttons mt-8">
+            <div class="action-buttons">
               <v-btn
                 type="button"
                 variant="outlined"
@@ -161,26 +162,127 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.survey-container {
+  padding-block: var(--app-spacing-xl);
+  padding-inline: clamp(var(--app-spacing-sm), 4vw, var(--app-spacing-lg));
+}
+
+.survey-card {
+  background-color: var(--app-surface);
+  border-radius: var(--app-radius-lg);
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow-soft);
+}
+
+.survey-card__header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--app-spacing-sm);
+  padding: var(--app-spacing-lg);
+  background: linear-gradient(135deg, rgba(195, 74, 44, 0.12), rgba(247, 244, 239, 0.92));
+}
+
+.survey-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2vw + 1rem, 2.25rem);
+  font-weight: 600;
+  color: var(--app-headline);
+}
+
+.survey-subtitle {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.95rem;
+}
+
+.survey-card__body {
+  padding: var(--app-spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-spacing-md);
+}
+
+.survey-progress {
+  margin-bottom: var(--app-spacing-sm);
+  background-color: var(--app-accent-soft);
+}
+
+.survey-progress__label {
+  color: var(--app-text-muted);
+}
+
+.survey-divider {
+  margin-block: var(--app-spacing-md);
+}
+
+.survey-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-spacing-md);
+}
+
+.survey-item-card {
+  border-radius: var(--app-radius-md);
+  border-color: var(--app-border);
+  background-color: var(--app-surface-muted);
+}
+
+.survey-item-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-spacing-sm);
+  padding: var(--app-spacing-md);
+}
+
+.survey-question {
+  font-weight: 600;
+  color: var(--app-headline);
+}
+
 .likert-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: var(--app-spacing-sm);
 }
 
 .action-buttons {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--app-spacing-sm);
+  margin-top: var(--app-spacing-lg);
 }
 
-@media (min-width: 600px) {
+.action-buttons :deep(.v-btn) {
+  min-width: 220px;
+  text-transform: none;
+  letter-spacing: 0.08em;
+  border-radius: var(--app-radius-sm);
+}
+
+.action-buttons :deep(.v-btn--variant-outlined) {
+  border-color: var(--app-border);
+  color: var(--app-text);
+}
+
+@media (min-width: 640px) {
+  .survey-card__body {
+    padding: calc(var(--app-spacing-lg) + 4px);
+  }
+
+  .survey-item-card__body {
+    padding: calc(var(--app-spacing-md) + 4px);
+  }
+
   .action-buttons {
     flex-direction: row;
     align-items: center;
   }
+}
 
-  .action-buttons :deep(.v-btn) {
-    width: auto;
+@media (min-width: 1024px) {
+  .survey-container {
+    padding-block: calc(var(--app-spacing-xl) + 16px);
   }
 }
 </style>
