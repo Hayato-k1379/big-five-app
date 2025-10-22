@@ -45,12 +45,6 @@ const router = createRouter({
       }
     },
     {
-      path: '/landing',
-      beforeEnter: () => {
-        window.location.href = '/landing.html';
-      }
-    },
-    {
       path: '/:pathMatch(.*)*',
       redirect: { name: 'survey' }
     }
