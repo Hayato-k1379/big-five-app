@@ -38,8 +38,8 @@
       <nav class="lp-header__inner container">
         <a class="lp-logo" href="{% url 'survey:home' %}">Big Five 50問テスト</a>
         <div class="lp-header__actions">
-          <a class="lp-header__link" href="/app/survey">診断へ進む</a>
-          <a class="lp-header__link" href="/app/privacy">プライバシー</a>
+          <a class="lp-header__link" href="{{ APP_SURVEY_URL }}">診断へ進む</a>
+          <a class="lp-header__link" href="{{ APP_PRIVACY_URL }}">プライバシー</a>
         </div>
       </nav>
     </header>
@@ -53,13 +53,13 @@
         <p class="app-footer__note">このテストは匿名で利用できます。診断結果は参考情報としてご活用ください。</p>
         <p class="app-footer__copyright">© 2025 希望の再設計プロジェクト / Big-Five-App</p>
         <nav class="app-footer__links">
-          <a href="/app/privacy">プライバシーポリシー</a>
+          <a href="{{ APP_PRIVACY_URL }}">プライバシーポリシー</a>
           <span>｜</span>
-          <a href="/app/terms">利用規約</a>
+          <a href="{{ APP_TERMS_URL }}">利用規約</a>
           <span>｜</span>
-          <a href="/app/disclaimer">免責事項</a>
+          <a href="{{ APP_DISCLAIMER_URL }}">免責事項</a>
           <span>｜</span>
-          <a href="/app/legal/tokushoho">特定商取引法に基づく表記</a>
+          <a href="{{ APP_TOKUSHOHO_URL }}">特定商取引法に基づく表記</a>
         </nav>
       </div>
     </footer>

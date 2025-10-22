@@ -11,4 +11,5 @@ urlpatterns = [
     path("result/<uuid:pk>/", views.result, name="result"),
     path("app/", views.spa_entry, name="app"),
     re_path(r"^app/.+", views.spa_entry, name="app-catchall"),
+    path("legal/<slug:page>/", views.legal_page, name="legal-page"),
 ]

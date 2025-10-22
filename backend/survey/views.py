@@ -2,10 +2,11 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from django.conf import settings
 from django.forms.boundfield import BoundField
-from django.http import HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -14,6 +15,16 @@ from .models import PersonalityItem, SurveyResult
 
 from .constants import MAX_SCORE, MIN_SCORE, TRAIT_LABELS, TRAIT_ORDER
 from .services import SurveyScoringError, create_survey_result
+
+
+LEGAL_PAGE_FILES = {
+    "privacy": "privacy.html",
+    "terms": "terms.html",
+    "disclaimer": "disclaimer.html",
+    "tokushoho": "tokushoho.html",
+}
+
+LEGAL_PUBLIC_DIR = Path(settings.PROJECT_ROOT) / "frontend" / "public"
 
 
 def home(request: HttpRequest) -> HttpResponse:
@@ -94,3 +105,18 @@ def spa_entry(request: HttpRequest) -> HttpResponse:
         "survey/spa_unbuilt.html",
         status=200,
     )
+
+
+def legal_page(request: HttpRequest, page: str) -> HttpResponse:
+    """Serve the static legal documents from the shared public directory."""
+
+    filename = LEGAL_PAGE_FILES.get(page)
+    if not filename:
+        raise Http404("Unknown legal document.")
+
+    file_path = LEGAL_PUBLIC_DIR / filename
+    if not file_path.exists():
+        raise Http404("Legal document is not available on this server.")
+
+    content = file_path.read_text(encoding="utf-8")
+    return HttpResponse(content, content_type="text/html; charset=utf-8")
