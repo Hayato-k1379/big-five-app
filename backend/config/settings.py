@@ -221,7 +221,10 @@ if FRONTEND_DIST_DIR.exists():
     STATICFILES_DIRS.append(FRONTEND_DIST_DIR)
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+if DEBUG:
+    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+else:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 NOTE_DETAIL_URL = os.environ.get("NOTE_DETAIL_URL", "https://note.com/your_account/n/xxxxxxxx")
 
