@@ -95,10 +95,11 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
+            "django.template.context_processors.request",
+            "django.contrib.auth.context_processors.auth",
+            "django.contrib.messages.context_processors.messages",
+            "config.context_processors.app_links",
+        ],
         },
     }
 ]
@@ -253,10 +254,7 @@ FRONTEND_ORIGINS = _unique(
     [origin for origin in (_normalize_origin(o) for o in _raw_frontend_origin.split(",")) if origin]
 )
 
-if not FRONTEND_ORIGINS:
-    FRONTEND_ORIGINS = [_normalize_origin("https://example.vercel.app")]
-
-FRONTEND_ORIGIN = FRONTEND_ORIGINS[0]
+FRONTEND_ORIGIN = FRONTEND_ORIGINS[0] if FRONTEND_ORIGINS else ""
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
