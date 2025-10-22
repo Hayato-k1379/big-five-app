@@ -1,0 +1,34 @@
+:root {
+  --app-background: #f7f4ef;
+  --app-surface: #ffffff;
+  --app-surface-muted: #f0ebe4;
+  --app-border: rgba(60, 54, 48, 0.12);
+  --app-text: #3c3630;
+  --app-text-muted: rgba(60, 54, 48, 0.72);
+  --app-headline: #2c2621;
+  --app-accent: #c34a2c;
+  --app-accent-strong: #9f3b22;
+  --app-accent-soft: rgba(195, 74, 44, 0.12);
+  --app-radius-sm: 12px;
+  --app-radius-md: 18px;
+  --app-radius-lg: 26px;
+  --app-shadow-soft: 0 24px 48px -24px rgba(60, 54, 48, 0.35);
+  --app-spacing-xs: 8px;
+  --app-spacing-sm: 12px;
+  --app-spacing-md: 20px;
+  --app-spacing-lg: 32px;
+  --app-spacing-xl: 48px;
+  --app-font-family: 'Noto Sans JP', 'Noto Sans', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'YuGothic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  background-color: var(--app-background);
+  color: var(--app-text);
+  font-family: var(--app-font-family);
+  letter-spacing: 0.01em;
+}
+
+::selection {
+  background-color: rgba(195, 74, 44, 0.16);
+  color: var(--app-headline);
+}

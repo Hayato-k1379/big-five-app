@@ -20,6 +20,13 @@ import {
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
+const ACCENT_FILL = 'rgba(195, 74, 44, 0.18)';
+const ACCENT_STROKE = '#c34a2c';
+const ACCENT_POINT = '#9f3b22';
+const GRID_COLOR = 'rgba(60, 54, 48, 0.15)';
+const TICK_COLOR = 'rgba(60, 54, 48, 0.65)';
+const LABEL_COLOR = '#3c3630';
+
 const props = defineProps({
   traitScores: {
     type: Array,
@@ -35,11 +42,15 @@ const chartData = computed(() => ({
     {
       label: 'スコア',
       data: props.traitScores.map((item) => item.scaled),
-      backgroundColor: 'rgba(33, 150, 243, 0.22)',
-      borderColor: '#0d47a1',
+      backgroundColor: ACCENT_FILL,
+      borderColor: ACCENT_STROKE,
       borderWidth: 2,
-      pointBackgroundColor: '#0d47a1',
-      pointBorderColor: '#fff'
+      pointBackgroundColor: ACCENT_POINT,
+      pointBorderColor: '#ffffff',
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      pointHoverBackgroundColor: ACCENT_STROKE,
+      pointHoverBorderColor: '#ffffff'
     }
   ]
 }));
@@ -103,11 +114,20 @@ const chartOptions = computed(() => ({
       beginAtZero: true,
       min: 0,
       max: 100,
+      angleLines: {
+        color: GRID_COLOR
+      },
+      grid: {
+        color: GRID_COLOR
+      },
       ticks: {
-        stepSize: 20
+        stepSize: 20,
+        color: TICK_COLOR,
+        showLabelBackdrop: false
       },
       pointLabels: {
         padding: pointLabelPadding.value,
+        color: LABEL_COLOR,
         callback: (label) => splitPointLabel(label),
         font: {
           size: pointLabelFontSize.value,

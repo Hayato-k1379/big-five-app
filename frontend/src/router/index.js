@@ -21,6 +21,36 @@ const router = createRouter({
       props: true
     },
     {
+      path: '/privacy',
+      beforeEnter: () => {
+        window.location.href = '/privacy.html';
+      }
+    },
+    {
+      path: '/terms',
+      beforeEnter: () => {
+        window.location.href = '/terms.html';
+      }
+    },
+    {
+      path: '/disclaimer',
+      beforeEnter: () => {
+        window.location.href = '/disclaimer.html';
+      }
+    },
+    {
+      path: '/legal/tokushoho',
+      beforeEnter: () => {
+        window.location.href = '/tokushoho.html';
+      }
+    },
+    {
+      path: '/landing',
+      beforeEnter: () => {
+        window.location.href = '/landing.html';
+      }
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: { name: 'survey' }
     }

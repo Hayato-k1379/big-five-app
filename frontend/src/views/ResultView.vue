@@ -1,22 +1,22 @@
 <template>
-  <v-container class="py-8" max-width="960">
+  <v-container class="result-container" max-width="960">
     <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="goBack">
       設問一覧に戻る
     </v-btn>
 
     <v-alert type="error" v-if="error" class="mb-4">{{ error }}</v-alert>
 
-    <v-sheet v-if="loading" class="py-12 d-flex justify-center">
+    <v-sheet v-if="loading" class="result-loading">
       <v-progress-circular indeterminate color="primary" size="64" />
     </v-sheet>
 
-    <v-card v-else-if="result" elevation="2">
-      <v-card-title class="d-flex flex-column align-start">
-        <h1 class="text-h5 font-weight-bold mb-2">診断結果</h1>
-        <p class="text-body-2 mb-0">各特性の合計値（最大{{ result.scaled_range.max }}）と0〜100スケール換算です。</p>
+    <v-card v-else-if="result" elevation="0" class="result-card">
+      <v-card-title class="result-card__header">
+        <h1 class="result-title">人は、見つめることで変わっていく。</h1>
+        <p class="result-subtitle">各特性の輪郭を静かに読み解き、今のあなたの姿を写し取ります。</p>
       </v-card-title>
-      <v-card-text>
-        <v-row class="gy-6">
+      <v-card-text class="result-card__body">
+        <v-row class="gy-6 result-grid">
           <v-col cols="12" class="d-flex justify-center">
             <traits-radar-chart :trait-scores="result.trait_scores" class="w-100" />
           </v-col>
@@ -51,8 +51,8 @@
             </v-table>
           </v-col>
         </v-row>
-        <section v-if="highlightCards.length" class="highlight-section mt-8">
-          <h2 class="text-subtitle-1 font-weight-bold mb-4">特性ハイライト</h2>
+        <section v-if="highlightCards.length" class="highlight-section">
+          <h2 class="highlight-title">特性ハイライト</h2>
           <v-row class="gy-4 highlight-row">
             <v-col v-for="card in highlightCards" :key="card.key" cols="12" md="6">
               <v-card
@@ -86,7 +86,7 @@
             </v-col>
           </v-row>
         </section>
-        <p class="text-body-2 text-medium-emphasis mt-6">
+        <p class="result-meta">
           ID: {{ result.id }} ／ 診断日時: {{ formattedDate }}
         </p>
       </v-card-text>
@@ -95,11 +95,11 @@
       v-if="result"
       elevation="1"
       :class="[
-        'mt-8 d-flex flex-column align-center text-center cta-sheet',
+        'cta-sheet',
         isMobile ? 'pa-5' : 'pa-6'
       ]"
     >
-      <h2 class="text-h6 font-weight-bold mb-4">さらに詳しいフィードバックをチェック</h2>
+      <h2 class="cta-title">構造を持てば、希望は形になる。</h2>
       <v-btn
         color="primary"
         size="large"
@@ -109,7 +109,7 @@
       >
         詳細結果（¥500）
       </v-btn>
-      <p class="text-body-2 text-medium-emphasis mb-0">
+      <p class="cta-note">
         ※ 有料記事（note）に移動します。購入後は記事内の「アプリに戻る」リンクから本ページに戻れます。
       </p>
     </v-sheet>
@@ -286,23 +286,90 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.cta-sheet {
-  width: 100%;
-  max-width: 720px;
-  margin-inline: auto;
+.result-container {
+  padding-block: var(--app-spacing-xl);
+  padding-inline: clamp(var(--app-spacing-sm), 4vw, var(--app-spacing-xl));
+  color: var(--app-text);
+}
+
+.result-loading {
+  display: flex;
+  justify-content: center;
+  padding-block: calc(var(--app-spacing-xl) - 8px);
+  background: transparent;
+}
+
+.result-card {
+  background-color: var(--app-surface);
+  border-radius: var(--app-radius-lg);
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow-soft);
+  overflow: hidden;
+}
+
+.result-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-spacing-sm);
+  padding: var(--app-spacing-lg);
+  background: linear-gradient(135deg, rgba(195, 74, 44, 0.14), rgba(247, 244, 239, 0.96));
+}
+
+.result-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2vw + 1rem, 2.25rem);
+  font-weight: 600;
+  color: var(--app-headline);
+}
+
+.result-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--app-text-muted);
+}
+
+.result-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-spacing-lg);
+  padding: var(--app-spacing-lg);
+}
+
+.result-grid {
+  margin: 0;
+}
+
+.result-table {
+  border-radius: var(--app-radius-md);
+  border: 1px solid var(--app-border);
+  overflow: hidden;
 }
 
 .result-table :deep(thead th) {
   white-space: nowrap;
+  background-color: var(--app-surface-muted);
+  color: var(--app-headline);
 }
 
 .result-table :deep(td) {
   vertical-align: middle;
+  color: var(--app-text);
+}
+
+.result-table :deep(tr:nth-child(even) td) {
+  background-color: rgba(240, 235, 228, 0.5);
 }
 
 .highlight-section {
   width: 100%;
-  padding-inline: 12px;
+  margin-top: var(--app-spacing-lg);
+}
+
+.highlight-title {
+  margin: 0 0 var(--app-spacing-md);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--app-headline);
 }
 
 .highlight-row {
@@ -317,6 +384,9 @@ onMounted(async () => {
   position: relative;
   height: 100%;
   overflow: hidden;
+  border-color: var(--app-border);
+  border-radius: var(--app-radius-md);
+  background-color: var(--app-surface);
 }
 
 .highlight-chip {
@@ -333,18 +403,55 @@ onMounted(async () => {
   inset-block: 0;
   inset-inline-start: 0;
   width: 6px;
-  background-color: var(--highlight-accent, var(--v-theme-primary));
+  background-color: var(--highlight-accent, var(--app-accent));
   border-top-left-radius: inherit;
   border-bottom-left-radius: inherit;
 }
 
-@media (max-width: 599px) {
-  .cta-sheet {
-    max-width: 100%;
-  }
+.result-meta {
+  margin-top: var(--app-spacing-md);
+  color: var(--app-text-muted);
+  font-size: 0.85rem;
+}
 
-  .highlight-section {
-    padding-inline: 8px;
+.cta-sheet {
+  width: 100%;
+  max-width: 720px;
+  margin: var(--app-spacing-xl) auto 0;
+  border-radius: calc(var(--app-radius-lg) - 4px);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow-soft);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--app-spacing-sm);
+}
+
+.cta-title {
+  margin: 0;
+  font-size: clamp(1.25rem, 1.2rem + 1vw, 1.75rem);
+  font-weight: 600;
+  color: var(--app-headline);
+}
+
+.cta-note {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: 0.85rem;
+}
+
+.cta-sheet :deep(.v-btn) {
+  text-transform: none;
+  letter-spacing: 0.08em;
+  border-radius: var(--app-radius-sm);
+  min-width: 220px;
+}
+
+@media (max-width: 599px) {
+  .result-container {
+    padding-inline: var(--app-spacing-sm);
   }
 
   .highlight-row :deep(.v-col) {
@@ -353,6 +460,12 @@ onMounted(async () => {
 
   .result-table :deep(td) {
     padding-block: 12px;
+  }
+}
+
+@media (min-width: 960px) {
+  .result-card__body {
+    padding: calc(var(--app-spacing-xl) - 4px);
   }
 }
 </style>
