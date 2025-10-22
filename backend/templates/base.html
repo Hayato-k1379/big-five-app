@@ -17,7 +17,20 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20241022" />
+    <style>
+      body,
+      .app-body {
+        background-color: #f7f4ef;
+        color: #3c3630;
+        font-family: 'Noto Sans JP', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+
+      .lp-header {
+        background: linear-gradient(135deg, rgba(195, 74, 44, 0.28), rgba(247, 244, 239, 0.95));
+        border-bottom: 1px solid rgba(60, 54, 48, 0.12);
+      }
+    </style>
     {% block extra_head %}{% endblock %}
   </head>
   <body class="app-body">
