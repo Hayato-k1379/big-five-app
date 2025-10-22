@@ -1,48 +1,101 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Big Five サーベイ{% endblock %}
+{% block title %}Big Five 50問テスト｜静けさの中で、自分を観察する時間を{% endblock %}
 
 {% block extra_head %}
-  <meta name="description" content="50問に回答してビッグファイブ診断を受けられる無料の日本語テストです。">
-  <meta property="og:title" content="Big Five 50問テスト">
-  <meta property="og:description" content="開放性・誠実性・外向性・協調性・神経症傾向の5特性をレーダーチャートで確認できます。">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="{{ site_base_url }}/">
-  <meta property="og:image" content="{{ site_base_url }}{% static 'ogp/og-image.png' %}">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Big Five 50問テスト">
-  <meta name="twitter:description" content="匿名で受けられる日本語ビッグファイブ診断。約5分で結果が分かります。">
-  <meta name="twitter:image" content="{{ site_base_url }}{% static 'ogp/og-image.png' %}">
+  <meta name="description" content="静けさの中で自分を観察する時間を届ける、IPIPベースのビッグファイブ50問テスト。約5分で結果を確認。">
+  <meta property="og:title" content="Big Five 50問テスト" />
+  <meta property="og:description" content="人は、見つめることで変わっていく。50問で現在の輪郭を静かに捉える診断体験。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{{ site_base_url }}/" />
+  <meta property="og:image" content="{{ site_base_url }}{% static 'ogp/og-image.png' %}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Big Five 50問テスト" />
+  <meta name="twitter:description" content="静けさの中で自分を観察する時間を。匿名で受けられるビッグファイブ診断。" />
+  <meta name="twitter:image" content="{{ site_base_url }}{% static 'ogp/og-image.png' %}" />
 {% endblock %}
 
 {% block content %}
-  <div class="row align-items-center g-4">
-    <div class="col-lg-7">
-      <h1 class="display-5 fw-bold mb-4">IPIP Big Five 50問テスト</h1>
-      <p class="lead">
-        Big Five（ビッグファイブ）は、開放性・誠実性・外向性・協調性・神経症傾向の5因子で
-        性格を捉える広く使われている心理特性モデルです。
+  <section class="lp-hero container">
+    <div class="lp-hero__lead">
+      <p class="lp-hero__eyebrow">静けさの中で、自分を観察する時間を。</p>
+      <h1 class="lp-hero__title">Big Five 50問テスト</h1>
+      <p class="lp-hero__text">
+        日々の変化に飲み込まれがちな心の輪郭を、50の問いで丁寧に映し出します。診断は完全匿名、所要時間はおよそ5分。今のあなたを静かに受け止める指標としてご利用ください。
       </p>
-      <p>
-        本テストは国際パーソナリティ項目プール（IPIP）が公開している50問版をベースとした
-        簡易診断です。回答時間はおよそ3〜8分、すべて日本語で匿名回答できます。
-      </p>
-      <p class="fw-semibold">結果は参考情報として活用し、臨床診断目的では使用しないでください。</p>
-      <a class="btn btn-primary btn-lg mt-3" href="/app/survey">テストを開始する</a>
+      <div class="lp-hero__actions">
+        <a class="lp-button lp-button--primary" href="/app/survey">診断をはじめる</a>
+        <a class="lp-button lp-button--ghost" href="#about">診断内容を見る</a>
+      </div>
+      <p class="lp-hero__note">結果は参考情報としてご活用ください。臨床診断・医療目的では使用できません。</p>
     </div>
-    <div class="col-lg-5">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h2 class="h4">テスト概要</h2>
-          <ul class="list-unstyled mb-0 mt-3">
-            <li class="mb-2">・設問数：50（5件法リッカート）</li>
-            <li class="mb-2">・所要時間：約3〜8分</li>
-            <li class="mb-2">・回答はすべて必須です</li>
-            <li class="mb-0">・結果はブラウザ上に保存され、個人情報は収集しません</li>
-          </ul>
-        </div>
+    <div class="lp-hero__card">
+      <h2>診断概要</h2>
+      <ul>
+        <li><span>設問数</span><strong>50問（5件法リッカート）</strong></li>
+        <li><span>所要時間</span><strong>約3〜8分</strong></li>
+        <li><span>結果表示</span><strong>レーダーチャート＋強み・注意点</strong></li>
+        <li><span>費用</span><strong>診断は無料／詳細レポートは¥500</strong></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="about" class="lp-section container">
+    <div class="lp-section__header">
+      <h2>人は、見つめることで変わっていく。</h2>
+      <p>
+        Big Five（ビッグファイブ）は開放性・誠実性・外向性・協調性・神経症傾向の5因子で性格を捉える心理特性モデルです。<br />
+        国際パーソナリティ項目プール（IPIP）が公開する設問をベースに、現在の傾向を静かに読み解く体験を設計しました。
+      </p>
+    </div>
+    <div class="lp-feature-grid">
+      <article class="lp-feature-card">
+        <h3>01｜自分の輪郭を描き直す</h3>
+        <p>設問に答えるプロセスそのものが、思考と感情を観察する時間になります。回答はすべて匿名で保存されません。</p>
+      </article>
+      <article class="lp-feature-card">
+        <h3>02｜結果は直感的に</h3>
+        <p>レーダーチャートとトーンの異なるテキストで、強みと注意が一目でわかるように再構成されています。</p>
+      </article>
+      <article class="lp-feature-card">
+        <h3>03｜深掘りの余白も</h3>
+        <p>より詳細な考察を求める方向けに、構造化された有料レポートをご用意。希望に合わせて次のステップへ。</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="lp-section lp-section--muted">
+    <div class="container lp-roadmap">
+      <h2>診断の流れ</h2>
+      <ol>
+        <li>
+          <span>STEP 1</span>
+          <strong>50の問いに静かに向き合う</strong>
+          <p>5段階で直感的に回答。あとから振り返るためのヒントも得られます。</p>
+        </li>
+        <li>
+          <span>STEP 2</span>
+          <strong>レーダーチャートで現在地を確認</strong>
+          <p>スコアだけでなく、特性ごとのニュアンスを簡潔に整理しています。</p>
+        </li>
+        <li>
+          <span>STEP 3</span>
+          <strong>必要に応じて詳細レポートへ</strong>
+          <p>構造を持てば、希望は形になります。行動計画の材料としてご活用ください。</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="lp-section container lp-cta">
+    <div class="lp-cta__body">
+      <h2>静けさを取り戻し、今のあなたを整える。</h2>
+      <p>数分の観察が、次の一歩の輪郭を描きます。匿名・無料で、いつでも始められます。</p>
+      <div class="lp-cta__actions">
+        <a class="lp-button lp-button--primary" href="/app/survey">診断をはじめる</a>
+        <a class="lp-button lp-button--ghost" href="#about">診断内容を見る</a>
       </div>
     </div>
-  </div>
+  </section>
 {% endblock %}

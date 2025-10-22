@@ -5,6 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}Big Five サーベイ{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -14,42 +20,34 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     {% block extra_head %}{% endblock %}
   </head>
-  <body>
-    <header class="bg-primary text-white shadow-sm">
-      <nav class="navbar navbar-expand-lg navbar-dark container">
-        <a class="navbar-brand fw-bold" href="{% url 'survey:home' %}">Big Five テスト</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'survey:home' %}">トップ</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/app/survey">テストを受ける</a>
-            </li>
-          </ul>
+  <body class="app-body">
+    <header class="lp-header">
+      <nav class="lp-header__inner container">
+        <a class="lp-logo" href="{% url 'survey:home' %}">Big Five 50問テスト</a>
+        <div class="lp-header__actions">
+          <a class="lp-header__link" href="/app/survey">診断へ進む</a>
+          <a class="lp-header__link" href="/app/privacy">プライバシー</a>
         </div>
       </nav>
     </header>
 
-    <main class="container my-5">
+    <main class="app-main">
       {% block content %}{% endblock %}
     </main>
 
-    <footer class="py-4 bg-light border-top small text-center">
+    <footer class="app-footer">
       <div class="container">
-        <p class="mb-1">このテストは匿名で利用できます。診断結果は参考情報としてご活用ください。</p>
-        <p class="mb-0">IPIPの項目はパブリックドメインです。</p>
+        <p class="app-footer__note">このテストは匿名で利用できます。診断結果は参考情報としてご活用ください。</p>
+        <p class="app-footer__copyright">© 2025 希望の再設計プロジェクト / Big-Five-App</p>
+        <nav class="app-footer__links">
+          <a href="/app/privacy">プライバシーポリシー</a>
+          <span>｜</span>
+          <a href="/app/terms">利用規約</a>
+          <span>｜</span>
+          <a href="/app/disclaimer">免責事項</a>
+          <span>｜</span>
+          <a href="/app/legal/tokushoho">特定商取引法に基づく表記</a>
+        </nav>
       </div>
     </footer>
 
