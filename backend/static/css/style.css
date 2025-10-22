@@ -56,6 +56,12 @@ a:focus {
   gap: var(--app-spacing-sm);
 }
 
+.container {
+  width: min(1040px, 100%);
+  margin: 0 auto;
+  padding-inline: clamp(var(--app-spacing-sm), 4vw, var(--app-spacing-lg));
+}
+
 .lp-logo {
   font-size: 1.05rem;
   font-weight: 600;
