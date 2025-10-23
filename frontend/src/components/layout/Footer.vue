@@ -1,19 +1,21 @@
 <template>
   <v-footer app height="72" class="footer">
     <nav class="footer__nav">
-      <RouterLink class="footer__link" to="/privacy">プライバシーポリシー</RouterLink>
+      <a class="footer__link" :href="links.privacy">プライバシーポリシー</a>
       <span class="footer__separator">｜</span>
-      <RouterLink class="footer__link" to="/terms">利用規約</RouterLink>
+      <a class="footer__link" :href="links.terms">利用規約</a>
       <span class="footer__separator">｜</span>
-      <RouterLink class="footer__link" to="/disclaimer">免責事項</RouterLink>
+      <a class="footer__link" :href="links.disclaimer">免責事項</a>
       <span class="footer__separator">｜</span>
-      <RouterLink class="footer__link" to="/legal/tokushoho">特定商取引法</RouterLink>
+      <a class="footer__link" :href="links.tokushoho">特定商取引法</a>
     </nav>
   </v-footer>
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router';
+import { legalLinks } from '../../config/links.js';
+
+const links = legalLinks;
 </script>
 
 <style scoped>
