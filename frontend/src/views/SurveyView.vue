@@ -222,8 +222,31 @@ const scrollToCurrent = (behavior = 'smooth') => {
     const rect = card.getBoundingClientRect();
     const target = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
     const clamped = Math.max(0, target);
-    window.scrollTo({ top: clamped, behavior });
+
+    if (behavior === 'smooth') {
+      animateScroll(window.scrollY, clamped, 600);
+    } else {
+      window.scrollTo({ top: clamped, behavior });
+    }
   });
+};
+
+const animateScroll = (from, to, duration) => {
+  const start = performance.now();
+  const delta = to - from;
+
+  const ease = (t) => 1 - Math.pow(1 - t, 3);
+
+  const step = (now) => {
+    const elapsed = Math.min(1, (now - start) / duration);
+    const eased = ease(elapsed);
+    window.scrollTo({ top: from + delta * eased });
+    if (elapsed < 1) {
+      requestAnimationFrame(step);
+    }
+  };
+
+  requestAnimationFrame(step);
 };
 
 const findNextUnansweredIndex = (startIndex = 0) => {
