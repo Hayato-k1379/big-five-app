@@ -13,9 +13,6 @@ _APP_PATHS = {
 
 
 def _resolve_app_link(path: str, fallback_name: str, kwargs: dict | None = None) -> str:
-    origin = getattr(settings, "FRONTEND_ORIGIN", "")
-    if origin:
-        return f"{origin.rstrip('/')}{path}"
     url = reverse(fallback_name, kwargs=kwargs)
     site_base = getattr(settings, "SITE_BASE_URL", "").rstrip("/")
     if site_base:
