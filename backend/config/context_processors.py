@@ -1,31 +1,28 @@
 from __future__ import annotations
 
 from django.conf import settings
-from django.urls import reverse
-
-_APP_PATHS = {
-    "survey": ("/app/survey", "survey:survey"),
-    "privacy": ("/app/privacy", "survey:legal-page", {"page": "privacy"}),
-    "terms": ("/app/terms", "survey:legal-page", {"page": "terms"}),
-    "disclaimer": ("/app/disclaimer", "survey:legal-page", {"page": "disclaimer"}),
-    "tokushoho": ("/app/legal/tokushoho", "survey:legal-page", {"page": "tokushoho"}),
+_LEGAL_SLUGS = {
+    "privacy": "privacy",
+    "terms": "terms",
+    "disclaimer": "disclaimer",
+    "tokushoho": "tokushoho",
 }
 
 
-def _resolve_app_link(path: str, fallback_name: str, kwargs: dict | None = None) -> str:
-    url = reverse(fallback_name, kwargs=kwargs)
+def _legal_url(slug: str) -> str:
+    path = f"/legal/{slug}/"
     site_base = getattr(settings, "SITE_BASE_URL", "").rstrip("/")
-    if site_base:
-        return f"{site_base}{url}"
-    return url
+    return f"{site_base}{path}" if site_base else path
 
 
 def app_links(request):
-    """Provide SPA entry links with graceful fallback to server-rendered routes."""
+    """Provide absolute URLs for key application entry points."""
 
-    resolved = {}
-    for key, spec in _APP_PATHS.items():
-        path, name, *rest = spec
-        kwargs = rest[0] if rest else None
-        resolved[f"APP_{key.upper()}_URL"] = _resolve_app_link(path, name, kwargs)
-    return resolved
+    links = {
+        "APP_SURVEY_URL": settings.SPA_SURVEY_URL,
+    }
+
+    for key, slug in _LEGAL_SLUGS.items():
+        links[f"APP_{key.upper()}_URL"] = _legal_url(slug)
+
+    return links

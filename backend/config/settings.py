@@ -59,6 +59,19 @@ if SITE_BASE_URL:
         if host and host not in ALLOWED_HOSTS:
             ALLOWED_HOSTS.append(host)
 
+SPA_BASE_URL = os.environ.get("SPA_BASE_URL", "https://big-five-app.vercel.app/app").rstrip("/")
+if not SPA_BASE_URL:
+    SPA_BASE_URL = "/app"
+
+
+def _build_spa_url(path: str) -> str:
+    normalized = "/" + path.lstrip("/")
+    return f"{SPA_BASE_URL}{normalized}" if SPA_BASE_URL.startswith("http") else f"{SPA_BASE_URL}{normalized}"
+
+
+SPA_SURVEY_URL = _build_spa_url("survey")
+SPA_RESULT_BASE_URL = _build_spa_url("result")
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
