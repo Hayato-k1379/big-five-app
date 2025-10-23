@@ -6,121 +6,126 @@
 
     <v-alert type="error" v-if="error" class="mb-4">{{ error }}</v-alert>
 
-    <v-sheet v-if="loading" class="result-loading">
+    <v-sheet v-if="!ready" class="result-loading">
       <v-progress-circular indeterminate color="primary" size="64" />
     </v-sheet>
 
-    <v-card v-else-if="result" elevation="0" class="result-card">
-      <v-card-title class="result-card__header">
-        <h1 class="result-title">人は、見つめることで変わっていく。</h1>
-        <p class="result-subtitle">各特性の輪郭を静かに読み解き、今のあなたの姿を写し取ります。</p>
-      </v-card-title>
-      <v-card-text class="result-card__body">
-        <v-row class="gy-6 result-grid">
-          <v-col cols="12" class="d-flex justify-center">
-            <traits-radar-chart :trait-scores="result.trait_scores" class="w-100" />
-          </v-col>
-          <v-col cols="12">
-            <v-table :density="tableDensity" class="result-table">
-              <thead>
-                <tr>
-                  <th>特性</th>
-                  <th class="text-right">合計</th>
-                  <th class="text-right">スコア</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="trait in displayTraits" :key="trait.trait">
-                  <td>{{ trait.label }}</td>
-                  <td class="text-right">{{ trait.sum }}</td>
-                  <td class="text-right">
-                    <div class="d-flex align-center justify-end" style="gap: 8px;">
-                      <span :class="[scoreTextClass, 'font-weight-bold']">{{ trait.displayScore }}</span>
-                      <v-chip
-                        :color="trait.levelColor"
-                        :size="chipSize"
-                        variant="flat"
-                        class="text-body-2 font-weight-medium"
-                      >
-                        {{ trait.levelLabel }}
-                      </v-chip>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </v-table>
-          </v-col>
-        </v-row>
-        <section v-if="highlightCards.length" class="highlight-section">
-          <h2 class="highlight-title">特性ハイライト</h2>
-          <v-row class="gy-4 highlight-row">
-            <v-col v-for="card in highlightCards" :key="card.key" cols="12" md="6">
-              <v-card
-                variant="outlined"
-                class="highlight-card pa-4"
-                :style="getHighlightAccentStyle(card.color)"
-                @click="openTraitDetail(card.traits?.[0], card.title)"
-                role="button"
-                tabindex="0"
-                @keydown.enter.prevent="openTraitDetail(card.traits?.[0], card.title)"
-              >
-                <div class="d-flex align-center mb-3" style="gap: 12px;">
-                  <v-chip
-                    v-if="card.badge"
-                    :color="card.color"
-                    variant="flat"
-                    size="small"
-                    class="highlight-chip font-weight-medium"
-                  >
-                    {{ card.badge }}
-                  </v-chip>
-                  <span class="text-subtitle-1 font-weight-medium">{{ card.title }}</span>
-                </div>
-                <div class="d-flex flex-column" style="gap: 8px;">
-                  <div
-                    v-for="item in card.traits"
-                    :key="item.trait"
-                    class="d-flex align-center justify-space-between highlight-trait-row"
-                  >
-                    <span class="text-body-1 font-weight-medium">{{ item.label }}</span>
-                    <span class="text-subtitle-1 font-weight-bold">{{ item.display_score }}</span>
-                  </div>
-                </div>
-                <div class="highlight-card__overlay">
-                  <span>詳細を見る</span>
-                </div>
-              </v-card>
-            </v-col>
-          </v-row>
-        </section>
-        <p class="result-meta">
-          ID: {{ result.id }} ／ 診断日時: {{ formattedDate }}
-        </p>
-      </v-card-text>
-    </v-card>
-    <v-sheet
-      v-if="result"
-      elevation="1"
-      :class="[
-        'cta-sheet',
-        isMobile ? 'pa-5' : 'pa-6'
-      ]"
-    >
-      <h2 class="cta-title">構造を持てば、希望は形になる。</h2>
-      <v-btn
-        color="primary"
-        size="large"
-        class="mb-2"
-        :href="NOTE_DETAIL_PATH"
-        :block="isMobile"
-      >
-        詳細結果（¥500）
-      </v-btn>
-      <p class="cta-note">
-        ※ 有料記事（note）に移動します。購入後は記事内の「アプリに戻る」リンクから本ページに戻れます。
-      </p>
-    </v-sheet>
-    <v-alert v-else type="warning">結果が見つかりませんでした。</v-alert>
+    <transition name="page-fade" appear>
+      <div v-if="ready">
+        <template v-if="result">
+          <v-card elevation="0" class="result-card">
+            <v-card-title class="result-card__header">
+              <h1 class="result-title">人は、見つめることで変わっていく。</h1>
+              <p class="result-subtitle">各特性の輪郭を静かに読み解き、今のあなたの姿を写し取ります。</p>
+            </v-card-title>
+            <v-card-text class="result-card__body">
+              <v-row class="gy-6 result-grid">
+                <v-col cols="12" class="d-flex justify-center">
+                  <traits-radar-chart :trait-scores="result.trait_scores" class="w-100" />
+                </v-col>
+                <v-col cols="12">
+                  <v-table :density="tableDensity" class="result-table">
+                    <thead>
+                      <tr>
+                        <th>特性</th>
+                        <th class="text-right">合計</th>
+                        <th class="text-right">スコア</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="trait in displayTraits" :key="trait.trait">
+                        <td>{{ trait.label }}</td>
+                        <td class="text-right">{{ trait.sum }}</td>
+                        <td class="text-right">
+                          <div class="d-flex align-center justify-end" style="gap: 8px;">
+                            <span :class="[scoreTextClass, 'font-weight-bold']">{{ trait.displayScore }}</span>
+                            <v-chip
+                              :color="trait.levelColor"
+                              :size="chipSize"
+                              variant="flat"
+                              class="text-body-2 font-weight-medium"
+                            >
+                              {{ trait.levelLabel }}
+                            </v-chip>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </v-table>
+                </v-col>
+              </v-row>
+              <section v-if="highlightCards.length" class="highlight-section">
+                <h2 class="highlight-title">特性ハイライト</h2>
+                <v-row class="gy-4 highlight-row">
+                  <v-col v-for="card in highlightCards" :key="card.key" cols="12" md="6">
+                    <v-card
+                      variant="outlined"
+                      class="highlight-card pa-4"
+                      :style="getHighlightAccentStyle(card.color)"
+                      @click="openTraitDetail(card.traits?.[0], card.title)"
+                      role="button"
+                      tabindex="0"
+                      @keydown.enter.prevent="openTraitDetail(card.traits?.[0], card.title)"
+                    >
+                      <div class="d-flex align-center mb-3" style="gap: 12px;">
+                        <v-chip
+                          v-if="card.badge"
+                          :color="card.color"
+                          variant="flat"
+                          size="small"
+                          class="highlight-chip font-weight-medium"
+                        >
+                          {{ card.badge }}
+                        </v-chip>
+                        <span class="text-subtitle-1 font-weight-medium">{{ card.title }}</span>
+                      </div>
+                      <div class="d-flex flex-column" style="gap: 8px;">
+                        <div
+                          v-for="item in card.traits"
+                          :key="item.trait"
+                          class="d-flex align-center justify-space-between highlight-trait-row"
+                        >
+                          <span class="text-body-1 font-weight-medium">{{ item.label }}</span>
+                          <span class="text-subtitle-1 font-weight-bold">{{ item.display_score }}</span>
+                        </div>
+                      </div>
+                      <div class="highlight-card__overlay">
+                        <span>詳細を見る</span>
+                      </div>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </section>
+              <p class="result-meta">
+                ID: {{ result.id }} ／ 診断日時: {{ formattedDate }}
+              </p>
+            </v-card-text>
+          </v-card>
+          <v-sheet
+            elevation="1"
+            :class="[
+              'cta-sheet',
+              isMobile ? 'pa-5' : 'pa-6'
+            ]"
+          >
+            <h2 class="cta-title">構造を持てば、希望は形になる。</h2>
+            <v-btn
+              color="primary"
+              size="large"
+              class="mb-2"
+              :href="NOTE_DETAIL_PATH"
+              :block="isMobile"
+            >
+              詳細結果（¥500）
+            </v-btn>
+            <p class="cta-note">
+              ※ 有料記事（note）に移動します。購入後は記事内の「アプリに戻る」リンクから本ページに戻れます。
+            </p>
+          </v-sheet>
+        </template>
+        <v-alert v-else type="warning">結果が見つかりませんでした。</v-alert>
+      </div>
+    </transition>
 
     <v-dialog v-model="detailDialog" max-width="520" scrollable>
       <v-card class="detail-dialog">
@@ -144,7 +149,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { apiClient } from '../lib/apiClient';
 import TraitsRadarChart from '../components/TraitsRadarChart.vue';
@@ -158,6 +163,7 @@ const error = ref('');
 const display = useDisplay();
 const detailDialog = ref(false);
 const selectedTrait = ref(null);
+const ready = ref(false);
 
 const goBack = () => {
   router.push({ name: 'survey' });
@@ -298,6 +304,13 @@ const closeTraitDetail = () => {
   selectedTrait.value = null;
 };
 
+const scheduleReady = async () => {
+  await nextTick();
+  requestAnimationFrame(() => {
+    ready.value = true;
+  });
+};
+
 const normalizeResultPayload = (payload) => {
   if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
     return payload;
@@ -309,6 +322,7 @@ const normalizeResultPayload = (payload) => {
 const fetchResult = async () => {
   loading.value = true;
   error.value = '';
+  ready.value = false;
   try {
     const { data } = await apiClient.get(`results/${route.params.id}/`);
     const normalized = normalizeResultPayload(data);
@@ -323,6 +337,7 @@ const fetchResult = async () => {
     error.value = '結果の取得に失敗しました。URLをご確認のうえ再試行してください。';
   } finally {
     loading.value = false;
+    await scheduleReady();
   }
 };
 
@@ -332,6 +347,7 @@ onMounted(async () => {
     await fetchResult();
   } else {
     loading.value = false;
+    await scheduleReady();
   }
   scrollToTop();
 });
@@ -349,6 +365,23 @@ onMounted(async () => {
   justify-content: center;
   padding-block: calc(var(--app-spacing-xl) - 8px);
   background: transparent;
+}
+
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.page-fade-enter-from,
+.page-fade-leave-to {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.page-fade-enter-to,
+.page-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .result-card {
@@ -546,6 +579,21 @@ onMounted(async () => {
 @media (min-width: 960px) {
   .result-card__body {
     padding: calc(var(--app-spacing-xl) - 4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-fade-enter-active,
+  .page-fade-leave-active {
+    transition: none;
+  }
+
+  .page-fade-enter-from,
+  .page-fade-leave-to,
+  .page-fade-enter-to,
+  .page-fade-leave-from {
+    opacity: 1;
+    transform: none;
   }
 }
 

@@ -2,12 +2,13 @@
   <v-container class="survey-container" max-width="960">
     <v-alert type="error" v-if="error" class="mb-4">{{ error }}</v-alert>
 
-    <v-sheet v-if="loading" class="py-12 d-flex justify-center">
+    <v-sheet v-if="!ready" class="py-12 d-flex justify-center">
       <v-progress-circular indeterminate color="primary" size="64" />
     </v-sheet>
 
-    <template v-else>
-      <v-card elevation="0" class="survey-card">
+    <transition name="page-fade" appear>
+      <div v-if="ready">
+        <v-card elevation="0" class="survey-card">
         <v-card-title class="survey-card__header">
           <h1 class="survey-title">静けさの中で、自分を観察する時間を。</h1>
           <p class="survey-subtitle">50の問いを通じて、今のあなたを静かに映し出します。すべて必須です。</p>
@@ -137,8 +138,9 @@
             </div>
           </v-form>
         </v-card-text>
-      </v-card>
-    </template>
+        </v-card>
+      </div>
+    </transition>
   </v-container>
 </template>
 
@@ -157,6 +159,7 @@ const submitting = ref(false);
 const error = ref('');
 const currentIndex = ref(0);
 const wizardRef = ref(null);
+const ready = ref(false);
 
 const likertChoices = [
   { value: 1, label: 'まったく当てはまらない' },
@@ -200,9 +203,17 @@ const isFirst = computed(() => currentIndex.value === 0);
 const isLast = computed(() => !totalItems.value || currentIndex.value >= totalItems.value - 1);
 const hasUnansweredAhead = computed(() => findNextUnansweredIndex(currentIndex.value + 1) !== -1);
 
+const scheduleReady = async () => {
+  await nextTick();
+  requestAnimationFrame(() => {
+    ready.value = true;
+  });
+};
+
 const fetchItems = async () => {
   loading.value = true;
   error.value = '';
+  ready.value = false;
   try {
     const { data } = await apiClient.get('items/');
     const normalizedItems = ensureArray(data, 'items response');
@@ -218,6 +229,7 @@ const fetchItems = async () => {
     error.value = '設問の取得に失敗しました。ページを更新して再試行してください。';
   } finally {
     loading.value = false;
+    await scheduleReady();
   }
 };
 
@@ -372,6 +384,23 @@ watch(totalItems, (count) => {
 .survey-container {
   padding-block: var(--app-spacing-xl);
   padding-inline: clamp(var(--app-spacing-sm), 4vw, var(--app-spacing-lg));
+}
+
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.page-fade-enter-from,
+.page-fade-leave-to {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.page-fade-enter-to,
+.page-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .survey-card {
@@ -612,6 +641,21 @@ watch(totalItems, (count) => {
     width: auto;
     flex: 1 1 auto;
     min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-fade-enter-active,
+  .page-fade-leave-active {
+    transition: none;
+  }
+
+  .page-fade-enter-from,
+  .page-fade-leave-to,
+  .page-fade-enter-to,
+  .page-fade-leave-from {
+    opacity: 1;
+    transform: none;
   }
 }
 </style>
