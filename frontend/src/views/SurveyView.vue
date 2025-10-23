@@ -38,7 +38,7 @@
                   <div class="survey-question">{{ item.text }}</div>
                   <v-radio-group
                     v-model="responses[item.code]"
-                    inline
+                    :inline="!isMobile"
                     class="likert-group"
                   >
                     <v-radio
@@ -83,9 +83,11 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useDisplay } from 'vuetify';
 import { apiClient, ensureArray } from '../lib/apiClient';
 
 const router = useRouter();
+const display = useDisplay();
 const items = ref([]);
 const responses = reactive({});
 const loading = ref(true);
@@ -106,6 +108,7 @@ const answeredCount = computed(() =>
 );
 const progress = computed(() => (totalItems.value ? Math.round((answeredCount.value / totalItems.value) * 100) : 0));
 const canSubmit = computed(() => answeredCount.value === totalItems.value && totalItems.value > 0 && !submitting.value);
+const isMobile = computed(() => display.smAndDown.value);
 
 const fetchItems = async () => {
   loading.value = true;
@@ -244,6 +247,7 @@ onMounted(() => {
   display: flex;
   flex-wrap: wrap;
   gap: var(--app-spacing-sm);
+  flex-direction: row;
 }
 
 .action-buttons {
@@ -283,6 +287,17 @@ onMounted(() => {
 @media (min-width: 1024px) {
   .survey-container {
     padding-block: calc(var(--app-spacing-xl) + 16px);
+  }
+}
+
+@media (max-width: 639px) {
+  .likert-group {
+    flex-direction: column;
+  }
+
+  .likert-group :deep(.v-selection-control) {
+    width: 100%;
+    margin: 0;
   }
 }
 </style>
