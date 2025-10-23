@@ -59,10 +59,10 @@
                 variant="outlined"
                 class="highlight-card pa-4"
                 :style="getHighlightAccentStyle(card.color)"
-                @click="openTraitDetail(item, card.title)"
+                @click="openTraitDetail(card.traits?.[0], card.title)"
                 role="button"
                 tabindex="0"
-                @keydown.enter.prevent="openTraitDetail(item, card.title)"
+                @keydown.enter.prevent="openTraitDetail(card.traits?.[0], card.title)"
               >
                 <div class="d-flex align-center mb-3" style="gap: 12px;">
                   <v-chip
@@ -275,6 +275,10 @@ const highlightCards = computed(() => {
 });
 
 const openTraitDetail = (trait, cardTitle) => {
+  if (!trait) {
+    console.warn('[ResultView] Tried to open trait detail without trait data', cardTitle);
+    return;
+  }
   selectedTrait.value = {
     title: cardTitle,
     label: trait.label,
