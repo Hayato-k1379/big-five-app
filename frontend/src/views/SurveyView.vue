@@ -126,16 +126,6 @@
 
             <div class="action-buttons">
               <v-btn
-                type="button"
-                variant="outlined"
-                color="secondary"
-                :disabled="!totalItems || submitting"
-                @click="fillRandomResponses"
-              >
-                ランダムに回答を埋める
-              </v-btn>
-
-              <v-btn
                 type="submit"
                 color="primary"
                 size="large"
@@ -229,18 +219,6 @@ const fetchItems = async () => {
   } finally {
     loading.value = false;
   }
-};
-
-const fillRandomResponses = () => {
-  if (!items.value.length) {
-    return;
-  }
-  items.value.forEach((item) => {
-    const randomValue = Math.floor(Math.random() * likertChoices.length) + 1;
-    responses[item.code] = randomValue;
-  });
-  currentIndex.value = 0;
-  scrollToCurrent('auto');
 };
 
 const scrollToCurrent = (behavior = 'smooth') => {
@@ -595,21 +573,15 @@ watch(totalItems, (count) => {
 
 .action-buttons {
   display: flex;
-  flex-direction: column;
-  gap: var(--app-spacing-sm);
+  justify-content: center;
   margin-top: var(--app-spacing-lg);
 }
 
 .action-buttons :deep(.v-btn) {
-  min-width: 220px;
+  min-width: clamp(220px, 40vw, 320px);
   text-transform: none;
   letter-spacing: 0.08em;
   border-radius: var(--app-radius-sm);
-}
-
-.action-buttons :deep(.v-btn--variant-outlined) {
-  border-color: var(--app-border);
-  color: var(--app-text);
 }
 
 @media (min-width: 640px) {
@@ -619,11 +591,6 @@ watch(totalItems, (count) => {
 
   .survey-item-card__body {
     padding: calc(var(--app-spacing-md) + 4px);
-  }
-
-  .action-buttons {
-    flex-direction: row;
-    align-items: center;
   }
 }
 
