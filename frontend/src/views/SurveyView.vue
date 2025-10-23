@@ -206,14 +206,23 @@ const fillRandomResponses = () => {
     responses[item.code] = randomValue;
   });
   currentIndex.value = 0;
-  scrollToCurrent();
+  scrollToCurrent('auto');
 };
 
-const scrollToCurrent = () => {
+const scrollToCurrent = (behavior = 'smooth') => {
   nextTick(() => {
-    if (wizardRef.value) {
-      wizardRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const host = wizardRef.value;
+    if (!host) {
+      return;
     }
+    const card = host.querySelector('.wizard-card');
+    if (!card) {
+      return;
+    }
+    const rect = card.getBoundingClientRect();
+    const target = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
+    const clamped = Math.max(0, target);
+    window.scrollTo({ top: clamped, behavior });
   });
 };
 
@@ -319,7 +328,7 @@ onBeforeUnmount(() => {
 watch(totalItems, (count) => {
   if (count) {
     currentIndex.value = 0;
-    scrollToCurrent();
+    scrollToCurrent('auto');
   }
 });
 </script>
