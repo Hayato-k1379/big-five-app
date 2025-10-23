@@ -360,6 +360,18 @@ a:focus {
   color: var(--app-text-muted);
 }
 
+.app-footer__logo {
+  display: inline-block;
+  margin-bottom: var(--app-spacing-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--app-headline);
+}
+
+.app-footer__logo:hover {
+  color: var(--app-accent);
+}
+
 .app-footer__note {
   margin-bottom: var(--app-spacing-xs);
 }
