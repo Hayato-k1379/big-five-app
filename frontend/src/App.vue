@@ -22,8 +22,10 @@
 import { RouterLink } from 'vue-router';
 import AppFooter from './components/layout/Footer.vue';
 
+const HOME_URL = 'https://big-five-app-of9f.onrender.com/';
+
 const goHome = () => {
-  window.location.href = '/';
+  window.location.href = HOME_URL;
 };
 </script>
 
