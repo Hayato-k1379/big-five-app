@@ -38,7 +38,7 @@
                   <div class="survey-question">{{ item.text }}</div>
                   <v-radio-group
                     v-model="responses[item.code]"
-                    :inline="!isMobile"
+                    :inline="isWide"
                     class="likert-group"
                   >
                     <v-radio
@@ -108,7 +108,7 @@ const answeredCount = computed(() =>
 );
 const progress = computed(() => (totalItems.value ? Math.round((answeredCount.value / totalItems.value) * 100) : 0));
 const canSubmit = computed(() => answeredCount.value === totalItems.value && totalItems.value > 0 && !submitting.value);
-const isMobile = computed(() => display.smAndDown.value);
+const isWide = computed(() => display.mdAndUp.value);
 
 const fetchItems = async () => {
   loading.value = true;
@@ -245,9 +245,13 @@ onMounted(() => {
 
 .likert-group {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: var(--app-spacing-sm);
-  flex-direction: row;
+}
+
+.likert-group :deep(.v-selection-control) {
+  width: 100%;
+  margin: 0;
 }
 
 .action-buttons {
@@ -290,14 +294,18 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 639px) {
+@media (min-width: 960px) {
   .likert-group {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: calc(var(--app-spacing-sm) + 4px);
   }
 
   .likert-group :deep(.v-selection-control) {
-    width: 100%;
-    margin: 0;
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
   }
 }
 </style>
