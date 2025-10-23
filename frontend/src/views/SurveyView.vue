@@ -38,8 +38,8 @@
                   <div class="survey-question">{{ item.text }}</div>
                   <v-radio-group
                     v-model="responses[item.code]"
-                    :inline="isWide"
-                    class="likert-group"
+                    :inline="false"
+                    :class="['likert-group', { 'likert-group--wide': isWide }]"
                   >
                     <v-radio
                       v-for="choice in likertChoices"
@@ -254,6 +254,25 @@ onMounted(() => {
   margin: 0;
 }
 
+.likert-group--wide {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--app-spacing-sm);
+  align-items: stretch;
+}
+
+.likert-group--wide :deep(.v-selection-control) {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  padding-inline: 4px;
+}
+
+.likert-group--wide :deep(.v-label) {
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+
 .action-buttons {
   display: flex;
   flex-direction: column;
@@ -295,23 +314,8 @@ onMounted(() => {
 }
 
 @media (min-width: 960px) {
-  .likert-group {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    gap: var(--app-spacing-sm);
-  }
-
-  .likert-group :deep(.v-selection-control) {
-    width: auto;
-    flex: 1 1 auto;
-    min-width: 0;
-    padding-inline: 6px;
-  }
-
-  .likert-group :deep(.v-label) {
-    white-space: nowrap;
-    font-size: 0.95rem;
+  .likert-group--wide {
+    gap: calc(var(--app-spacing-sm) + 4px);
   }
 }
 </style>
