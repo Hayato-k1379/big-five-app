@@ -7,7 +7,7 @@ from pathlib import Path
 from django.conf import settings
 from django.forms.boundfield import BoundField
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from .forms import SurveyForm
@@ -96,10 +96,6 @@ def _build_question_fields(form: SurveyForm, items: list[PersonalityItem]) -> li
 
 def spa_entry(request: HttpRequest) -> HttpResponse:
     """Serve the built Vue application for /app routes."""
-    if settings.FRONTEND_ORIGIN:
-        redirect_url = f"{settings.FRONTEND_ORIGIN}{request.get_full_path()}"
-        return redirect(redirect_url)
-
     return render(
         request,
         "survey/spa_unbuilt.html",
