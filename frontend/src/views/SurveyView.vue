@@ -299,19 +299,13 @@ onMounted(() => {
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
-    gap: var(--app-spacing-sm);
+    gap: calc(var(--app-spacing-sm) + 4px);
   }
 
   .likert-group :deep(.v-selection-control) {
     width: auto;
     flex: 1 1 auto;
     min-width: 0;
-    padding-inline: 6px;
-  }
-
-  .likert-group :deep(.v-label) {
-    white-space: nowrap;
-    font-size: 0.95rem;
   }
 }
 </style>
