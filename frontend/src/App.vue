@@ -2,7 +2,7 @@
   <v-app class="app-shell">
     <v-app-bar color="primary" density="comfortable" flat class="app-header">
       <v-app-bar-title class="app-title">
-        <a class="app-title__link" href="/">Big Five 50問テスト</a>
+        <a class="app-title__link" href="/" @click.prevent="goHome">Big Five 50問テスト</a>
       </v-app-bar-title>
       <v-spacer />
       <RouterLink class="app-link" :to="{ name: 'survey' }">
@@ -21,6 +21,10 @@
 <script setup>
 import { RouterLink } from 'vue-router';
 import AppFooter from './components/layout/Footer.vue';
+
+const goHome = () => {
+  window.location.href = '/';
+};
 </script>
 
 <style scoped>
