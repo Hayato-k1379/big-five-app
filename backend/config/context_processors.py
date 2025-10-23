@@ -17,6 +17,9 @@ def _resolve_app_link(path: str, fallback_name: str, kwargs: dict | None = None)
     if origin:
         return f"{origin.rstrip('/')}{path}"
     url = reverse(fallback_name, kwargs=kwargs)
+    site_base = getattr(settings, "SITE_BASE_URL", "").rstrip("/")
+    if site_base:
+        return f"{site_base}{url}"
     return url
 
 
