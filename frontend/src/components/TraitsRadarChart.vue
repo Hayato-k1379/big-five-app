@@ -107,6 +107,24 @@ const chartOptions = computed(() => ({
   plugins: {
     legend: {
       display: false
+    },
+    tooltip: {
+      enabled: true,
+      callbacks: {
+        title: (context) => context[0]?.label ?? '',
+        label: (context) => `スコア: ${context.parsed.r ?? context.parsed}`
+      },
+      displayColors: false,
+      backgroundColor: 'rgba(60, 54, 48, 0.92)',
+      titleFont: {
+        size: 14,
+        weight: '600'
+      },
+      bodyFont: {
+        size: 13
+      },
+      padding: 12,
+      cornerRadius: 8
     }
   },
   scales: {
@@ -135,6 +153,10 @@ const chartOptions = computed(() => ({
         }
       }
     }
+  },
+  animation: {
+    duration: 1000,
+    easing: 'easeOutQuart'
   }
 }));
 </script>

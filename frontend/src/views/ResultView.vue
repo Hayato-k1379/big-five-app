@@ -59,6 +59,10 @@
                 variant="outlined"
                 class="highlight-card pa-4"
                 :style="getHighlightAccentStyle(card.color)"
+                @click="openTraitDetail(item, card.title)"
+                role="button"
+                tabindex="0"
+                @keydown.enter.prevent="openTraitDetail(item, card.title)"
               >
                 <div class="d-flex align-center mb-3" style="gap: 12px;">
                   <v-chip
@@ -81,6 +85,9 @@
                     <span class="text-body-1 font-weight-medium">{{ item.label }}</span>
                     <span class="text-subtitle-1 font-weight-bold">{{ item.display_score }}</span>
                   </div>
+                </div>
+                <div class="highlight-card__overlay">
+                  <span>詳細を見る</span>
                 </div>
               </v-card>
             </v-col>
@@ -114,6 +121,25 @@
       </p>
     </v-sheet>
     <v-alert v-else type="warning">結果が見つかりませんでした。</v-alert>
+
+    <v-dialog v-model="detailDialog" max-width="520" scrollable>
+      <v-card class="detail-dialog">
+        <v-card-title class="detail-dialog__title">
+          <div class="detail-dialog__labels">
+            <span class="detail-dialog__eyebrow">{{ selectedTrait?.title }}</span>
+            <h3>{{ selectedTrait?.label }}</h3>
+          </div>
+          <v-btn icon="mdi-close" variant="text" @click="closeTraitDetail" />
+        </v-card-title>
+        <v-card-text class="detail-dialog__body">
+          <div class="detail-dialog__score">スコア: {{ selectedTrait?.score ?? '―' }}</div>
+          <p class="detail-dialog__description">{{ selectedTrait?.description }}</p>
+        </v-card-text>
+        <v-card-actions class="detail-dialog__actions">
+          <v-btn color="primary" block @click="closeTraitDetail">閉じる</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -130,6 +156,8 @@ const result = ref(null);
 const loading = ref(true);
 const error = ref('');
 const display = useDisplay();
+const detailDialog = ref(false);
+const selectedTrait = ref(null);
 
 const goBack = () => {
   router.push({ name: 'survey' });
@@ -245,6 +273,26 @@ const highlightCards = computed(() => {
 
   return cards;
 });
+
+const openTraitDetail = (trait, cardTitle) => {
+  selectedTrait.value = {
+    title: cardTitle,
+    label: trait.label,
+    score: trait.display_score ?? trait.scaled ?? trait.sum,
+    description:
+      trait.description
+      ?? trait.detail
+      ?? trait.long_text
+      ?? trait.summary
+      ?? 'この特性に関する詳細な説明は現在準備中です。'
+  };
+  detailDialog.value = true;
+};
+
+const closeTraitDetail = () => {
+  detailDialog.value = false;
+  selectedTrait.value = null;
+};
 
 const normalizeResultPayload = (payload) => {
   if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
@@ -387,6 +435,8 @@ onMounted(async () => {
   border-color: var(--app-border);
   border-radius: var(--app-radius-md);
   background-color: var(--app-surface);
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
 .highlight-chip {
@@ -406,6 +456,32 @@ onMounted(async () => {
   background-color: var(--highlight-accent, var(--app-accent));
   border-top-left-radius: inherit;
   border-bottom-left-radius: inherit;
+}
+
+.highlight-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--app-shadow-soft);
+}
+
+.highlight-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(140deg, rgba(195, 74, 44, 0.08), rgba(247, 244, 239, 0.92));
+  opacity: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 16px;
+  color: var(--app-accent-strong);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.highlight-card:hover .highlight-card__overlay,
+.highlight-card:focus-visible .highlight-card__overlay {
+  opacity: 1;
 }
 
 .result-meta {
@@ -467,5 +543,60 @@ onMounted(async () => {
   .result-card__body {
     padding: calc(var(--app-spacing-xl) - 4px);
   }
+}
+
+.detail-dialog {
+  border-radius: var(--app-radius-lg);
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow-soft);
+  background: var(--app-surface);
+}
+
+.detail-dialog__title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--app-spacing-sm);
+}
+
+.detail-dialog__labels {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-dialog__eyebrow {
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--app-text-muted);
+}
+
+.detail-dialog__labels h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.detail-dialog__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-spacing-sm);
+  color: var(--app-text);
+}
+
+.detail-dialog__score {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--app-accent-strong);
+}
+
+.detail-dialog__description {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.detail-dialog__actions {
+  padding: var(--app-spacing-md);
 }
 </style>
