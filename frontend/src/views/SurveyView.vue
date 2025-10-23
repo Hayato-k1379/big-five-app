@@ -49,7 +49,7 @@
                   v-if="currentItem"
                   :key="currentItem.code"
                   variant="outlined"
-                  class="survey-item-card wizard-card"
+                  :class="['survey-item-card', 'wizard-card', { 'is-answered': isCurrentAnswered }]"
                 >
                   <v-card-text class="survey-item-card__body">
                     <div class="wizard-meta">
@@ -74,6 +74,18 @@
                         :value="choice.value"
                       />
                     </v-radio-group>
+                    <v-expand-transition>
+                      <div v-if="isCurrentAnswered" class="likert-gauge">
+                        <v-progress-linear
+                          :model-value="gaugeValue"
+                          color="primary"
+                          height="8"
+                          rounded
+                          class="likert-gauge__bar"
+                        />
+                        <div class="likert-gauge__label">{{ gaugeLabel }}</div>
+                      </div>
+                    </v-expand-transition>
                   </v-card-text>
                 </v-card>
               </transition>
@@ -172,6 +184,28 @@ const progress = computed(() => (totalItems.value ? Math.round((answeredCount.va
 const canSubmit = computed(() => answeredCount.value === totalItems.value && totalItems.value > 0 && !submitting.value);
 const isWide = computed(() => display.mdAndUp.value);
 const currentItem = computed(() => items.value[currentIndex.value] || null);
+const currentValue = computed(() => {
+  const item = currentItem.value;
+  if (!item) {
+    return null;
+  }
+  const value = responses[item.code];
+  return value !== null && value !== undefined ? Number(value) : null;
+});
+const isCurrentAnswered = computed(() => currentValue.value !== null);
+const gaugeValue = computed(() => {
+  if (currentValue.value === null) {
+    return 0;
+  }
+  return ((currentValue.value - 1) / (likertChoices.length - 1)) * 100;
+});
+const gaugeLabel = computed(() => {
+  if (currentValue.value === null) {
+    return '';
+  }
+  const choice = likertChoices.find((item) => item.value === currentValue.value);
+  return choice ? choice.label : '';
+});
 const isFirst = computed(() => currentIndex.value === 0);
 const isLast = computed(() => !totalItems.value || currentIndex.value >= totalItems.value - 1);
 const hasUnansweredAhead = computed(() => findNextUnansweredIndex(currentIndex.value + 1) !== -1);
@@ -430,6 +464,7 @@ watch(totalItems, (count) => {
   align-items: center;
   justify-content: center;
   transition: all 200ms ease;
+  animation: none;
 }
 
 .stepper-dot.is-answered {
@@ -437,6 +472,7 @@ watch(totalItems, (count) => {
   background: rgba(195, 74, 44, 0.12);
   color: var(--app-accent-strong);
   box-shadow: 0 0 0 6px rgba(195, 74, 44, 0.08);
+  animation: answeredGlow 900ms ease;
 }
 
 .stepper-dot.is-active {
@@ -455,6 +491,28 @@ watch(totalItems, (count) => {
 .wizard-card {
   flex: 1;
   background: var(--app-surface);
+  transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+
+.wizard-card.is-answered {
+  background: rgba(240, 235, 228, 0.75);
+}
+
+.likert-gauge {
+  margin-top: var(--app-spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.likert-gauge__bar {
+  transition: all 260ms ease;
+}
+
+.likert-gauge__label {
+  font-size: 0.85rem;
+  color: var(--app-text-muted);
+  letter-spacing: 0.04em;
 }
 
 .wizard-meta {
@@ -491,6 +549,15 @@ watch(totalItems, (count) => {
 .wizard-slide-leave-to {
   opacity: 0;
   transform: translateX(-24px);
+}
+
+@keyframes answeredGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(195, 74, 44, 0.32);
+  }
+  100% {
+    box-shadow: 0 0 0 6px rgba(195, 74, 44, 0.08);
+  }
 }
 
 .survey-item-card {
