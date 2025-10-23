@@ -4,7 +4,6 @@ from django.conf import settings
 from django.urls import reverse
 
 _APP_PATHS = {
-    "home": ("/", "survey:home"),
     "survey": ("/app/survey", "survey:survey"),
     "privacy": ("/app/privacy", "survey:legal-page", {"page": "privacy"}),
     "terms": ("/app/terms", "survey:legal-page", {"page": "terms"}),
