@@ -254,6 +254,10 @@ onMounted(() => {
   margin: 0;
 }
 
+.likert-group :deep(.v-input__details) {
+  display: none;
+}
+
 .action-buttons {
   display: flex;
   flex-direction: column;
