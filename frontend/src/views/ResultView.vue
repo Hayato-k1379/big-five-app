@@ -28,14 +28,14 @@
                     <thead>
                       <tr>
                         <th>特性</th>
-                        <th class="text-right">合計</th>
+                        <th class="text-right result-table__col-total">合計</th>
                         <th class="text-right">スコア</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr v-for="trait in displayTraits" :key="trait.trait">
                         <td>{{ trait.label }}</td>
-                        <td class="text-right">{{ trait.sum }}</td>
+                        <td class="text-right result-table__col-total">{{ trait.sum }}</td>
                         <td class="text-right">
                           <div class="d-flex align-center justify-end" style="gap: 8px;">
                             <span :class="[scoreTextClass, 'font-weight-bold']">{{ trait.displayScore }}</span>
@@ -398,6 +398,11 @@ onMounted(async () => {
   gap: var(--app-spacing-sm);
   padding: var(--app-spacing-lg);
   background: linear-gradient(135deg, rgba(195, 74, 44, 0.14), rgba(247, 244, 239, 0.96));
+  white-space: normal;
+}
+
+.result-card__header > * {
+  min-width: 0;
 }
 
 .result-title {
@@ -443,6 +448,16 @@ onMounted(async () => {
 
 .result-table :deep(tr:nth-child(even) td) {
   background-color: rgba(240, 235, 228, 0.5);
+}
+
+.result-table__col-total {
+  white-space: nowrap;
+}
+
+@media (max-width: 599px) {
+  .result-table__col-total {
+    display: none !important;
+  }
 }
 
 .highlight-section {

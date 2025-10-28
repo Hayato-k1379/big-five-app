@@ -102,12 +102,12 @@
               >
                 前へ
               </v-btn>
-              <v-spacer></v-spacer>
               <v-btn
                 type="button"
                 variant="text"
                 color="secondary"
                 :disabled="!hasUnansweredAhead"
+                class="wizard-nav__jump"
                 @click="goNextUnanswered"
               >
                 未回答に移動
@@ -413,10 +413,14 @@ watch(totalItems, (count) => {
 .survey-card__header {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: var(--app-spacing-sm);
   padding: var(--app-spacing-lg);
   background: linear-gradient(135deg, rgba(195, 74, 44, 0.12), rgba(247, 244, 239, 0.92));
+  white-space: normal;
+}
+
+.survey-card__header > * {
+  min-width: 0;
 }
 
 .survey-title {
@@ -541,6 +545,10 @@ watch(totalItems, (count) => {
   align-items: center;
   gap: var(--app-spacing-sm);
   margin-top: var(--app-spacing-md);
+}
+
+.wizard-nav__jump {
+  margin-inline: auto;
 }
 
 .wizard-slide-enter-active,

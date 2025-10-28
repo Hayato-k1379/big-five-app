@@ -42,6 +42,12 @@ const goHome = () => {
   letter-spacing: 0.08em;
 }
 
+.app-header :deep(.v-toolbar-title__placeholder) {
+  overflow: visible;
+  text-overflow: unset;
+  white-space: normal;
+}
+
 .app-title {
   font-weight: 600;
   font-size: 1rem;
