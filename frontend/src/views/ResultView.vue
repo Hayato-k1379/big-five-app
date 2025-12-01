@@ -169,6 +169,31 @@ const goBack = () => {
   router.push({ name: 'survey' });
 };
 
+const tokenKey = (id) => `resultToken:${id}`;
+
+const storeToken = (id, token) => {
+  if (!id || !token) {
+    return;
+  }
+  try {
+    sessionStorage.setItem(tokenKey(id), token);
+  } catch (err) {
+    console.error('[ResultView] Failed to persist token', err);
+  }
+};
+
+const loadToken = (id) => {
+  if (!id) {
+    return null;
+  }
+  try {
+    return sessionStorage.getItem(tokenKey(id));
+  } catch (err) {
+    console.error('[ResultView] Failed to read token', err);
+    return null;
+  }
+};
+
 const formattedDate = computed(() => {
   if (!result.value) {
     return '';
@@ -181,6 +206,7 @@ const loadFromHistoryState = () => {
   const state = window.history.state;
   if (state && state.result && state.result.id === route.params.id) {
     result.value = state.result;
+    storeToken(state.result.id, state.token || state.result.token);
   }
 };
 
@@ -324,7 +350,13 @@ const fetchResult = async () => {
   error.value = '';
   ready.value = false;
   try {
-    const { data } = await apiClient.get(`results/${route.params.id}/`);
+    const token = loadToken(route.params.id);
+    if (!token) {
+      error.value = '結果を再取得するためのトークンが見つかりません。診断を再度実施してください。';
+      result.value = null;
+      return;
+    }
+    const { data } = await apiClient.get(`results/${route.params.id}/`, { params: { token } });
     const normalized = normalizeResultPayload(data);
     if (!normalized) {
       error.value = '結果データの取得形式が不正でした。時間をおいて再試行してください。';
@@ -332,6 +364,7 @@ const fetchResult = async () => {
       return;
     }
     result.value = normalized;
+    storeToken(normalized.id, token);
   } catch (err) {
     console.error(err);
     error.value = '結果の取得に失敗しました。URLをご確認のうえ再試行してください。';
@@ -349,6 +382,7 @@ onMounted(async () => {
     loading.value = false;
     await scheduleReady();
   }
+  storeToken(route.params.id, loadToken(route.params.id) || result.value?.token);
   scrollToTop();
 });
 </script>

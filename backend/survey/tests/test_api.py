@@ -5,6 +5,7 @@ import json
 
 from django.test import TestCase
 from django.urls import reverse
+from django.core.signing import TimestampSigner
 
 from survey.models import PersonalityItem, SurveyResult
 
@@ -57,7 +58,7 @@ class SurveyAPITests(TestCase):
         self.assertIn("signature_caution", highlights)
         self.assertIn("contrast_summary_locked", highlights)
         self.assertTrue(highlights["contrast_summary_locked"])
-        self.assertEqual(len(body["raw_scores"]), 50)
+        self.assertIn("token", body)
         self.assertTrue(
             SurveyResult.objects.filter(pk=body["id"]).exists(),
         )
@@ -76,8 +77,11 @@ class SurveyAPITests(TestCase):
             scaled_A=100,
             scaled_N=100,
         )
+        signer = TimestampSigner(salt="survey.result")
+        token = signer.sign(str(result.pk))
         response = self.client.get(
-            reverse("survey_api:result-detail", kwargs={"pk": result.pk})
+            reverse("survey_api:result-detail", kwargs={"pk": result.pk}),
+            {"token": token},
         )
         self.assertEqual(response.status_code, 200)
         body = response.json()
@@ -96,3 +100,20 @@ class SurveyAPITests(TestCase):
         body = response.json()
         self.assertIn("responses", body)
         self.assertEqual(SurveyResult.objects.count(), 0)
+
+    def test_result_detail_requires_token(self) -> None:
+        result = SurveyResult.objects.create(
+            raw_scores={"O1": 5},
+            sum_O=5,
+            sum_C=5,
+            sum_E=5,
+            sum_A=5,
+            sum_N=5,
+            scaled_O=100,
+            scaled_C=100,
+            scaled_E=100,
+            scaled_A=100,
+            scaled_N=100,
+        )
+        response = self.client.get(reverse("survey_api:result-detail", kwargs={"pk": result.pk}))
+        self.assertEqual(response.status_code, 403)

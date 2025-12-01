@@ -65,7 +65,6 @@ def serialize_result_payload(result) -> dict[str, object]:
         "id": str(result.pk),
         "created_at": result.created_at.isoformat(),
         "trait_scores": rows,
-        "raw_scores": result.raw_scores,
         "raw_range": {"min": MIN_SCORE, "max": MAX_SCORE},
         "scaled_range": {"min": 0, "max": 100},
         "highlights": serialize_highlights(highlights),
