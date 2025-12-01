@@ -6,6 +6,7 @@ import json
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.templatetags.static import static
 
 from .models import PersonalityItem, SurveyResult
 
@@ -66,6 +67,12 @@ class SurveyResultAdmin(admin.ModelAdmin):
     ordering = ("-created_at",)
     list_filter = ("created_at",)
     search_fields = ("uuid", "memo")
+    actions = ("scrub_raw_scores",)
+
+    @admin.action(description="生回答（raw_scores）を削除する")
+    def scrub_raw_scores(self, request, queryset):
+        updated = queryset.exclude(raw_scores={}).update(raw_scores={})
+        self.message_user(request, f"{updated}件の結果からraw_scoresを削除しました。")
 
     def radar_chart(self, obj: SurveyResult) -> str:
         """Render a small radar chart for scaled scores."""
@@ -73,6 +80,7 @@ class SurveyResultAdmin(admin.ModelAdmin):
         if not obj:
             return ""
 
+        chart_src = static("vendor/chart.js/chart.umd.min.js")
         labels = ["開放性", "誠実性", "外向性", "協調性", "神経症傾向"]
         scores = [
             obj.scaled_O,
@@ -91,6 +99,7 @@ class SurveyResultAdmin(admin.ModelAdmin):
             '<script>(function(){{'
             "const labels = {labels};"
             "const data = {scores};"
+            "const chartSrc = '{chart_src}';"
             'const ctx = document.getElementById("{chart_id}");'
             "if (!ctx) return;"
             "const render = () => new Chart(ctx, {{"
@@ -114,16 +123,25 @@ class SurveyResultAdmin(admin.ModelAdmin):
             "if (window.Chart) {{"
             "render();"
             "}} else {{"
-            "const s = document.createElement('script');"
-            "s.src = 'https://cdn.jsdelivr.net/npm/chart.js';"
-            "s.onload = render;"
-            "document.body.appendChild(s);"
+            "let loader = document.querySelector('script[data-chart-local=\"1\"]');"
+            "if (!loader) {{"
+            "loader = document.createElement('script');"
+            "loader.src = chartSrc;"
+            "loader.dataset.chartLocal = '1';"
+            "loader.onload = render;"
+            "document.head.appendChild(loader);"
+            "}} else if (loader.getAttribute('data-loaded')) {{"
+            "render();"
+            "}} else {{"
+            "loader.addEventListener('load', render, {{ once: true }});"
+            "}}"
             "}}"
             "}})();</script>"
             "</div>",
             chart_id=chart_id,
             labels=labels_json,
             scores=scores_json,
+            chart_src=chart_src,
         )
 
     radar_chart.short_description = "レーダーチャート"

@@ -44,8 +44,21 @@ if not SECRET_KEY:
     else:
         raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set when DEBUG is False.")
 
-ALLOWED_HOSTS: list[str] = env_list("DJANGO_ALLOWED_HOSTS", ["*"])
+ENV = os.environ.get("ENV", "dev").strip().lower()
+
 CSRF_TRUSTED_ORIGINS: list[str] = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
+
+if ENV == "prod":
+    ALLOWED_HOSTS: list[str] = env_list("ALLOWED_HOSTS")
+    if not ALLOWED_HOSTS and not DEBUG:
+        raise ImproperlyConfigured("ALLOWED_HOSTS must be set in production.")
+    CORS_ALLOWED_ORIGINS: list[str] = env_list("CORS_ALLOWED_ORIGINS")
+else:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
 
 
 SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "").rstrip("/")
@@ -96,6 +109,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "config.middleware.AdminContentSecurityPolicyMiddleware",
     "analytics.middleware.EnsureSessionIdMiddleware",
     "analytics.middleware.LogLandingPageViewMiddleware",
 ]
@@ -259,11 +273,6 @@ def _normalize_origin(raw: str) -> str:
     return candidate.rstrip("/")
 
 
-def _unique(seq: list[str]) -> list[str]:
-    seen: set[str] = set()
-    return [x for x in seq if not (x in seen or seen.add(x))]
-
-
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
     if RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
@@ -272,39 +281,8 @@ if RENDER_EXTERNAL_HOSTNAME:
     if render_origin and render_origin not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append(render_origin)
 
-_DEFAULT_DEV_CORS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:4173",
-    "http://127.0.0.1:4173",
-]
-
-
-CORS_ALLOWED_ORIGINS = _unique(
-    [origin for origin in (_normalize_origin(o) for o in env_list("DJANGO_CORS_ALLOWED_ORIGINS")) if origin]
-)
-if not CORS_ALLOWED_ORIGINS:
-    fallback_origins: list[str] = []
-    if DEBUG:
-        fallback_origins.extend(_DEFAULT_DEV_CORS)
-    CORS_ALLOWED_ORIGINS = _unique(fallback_origins)
 CORS_ALLOW_CREDENTIALS = env_bool("DJANGO_CORS_ALLOW_CREDENTIALS", default=False)
-
-CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.*\\.vercel\\.app$"]
-
-# Ensure well-known Vercel deployments are whitelisted even without env vars.
-_DEFAULT_DEPLOYED_ORIGINS = _unique(
-    [
-        "https://big-five-app-git-main-hayatokimuras-projects.vercel.app",
-        "https://big-five-app.vercel.app",
-    ]
-)
-
-for origin in _DEFAULT_DEPLOYED_ORIGINS:
-    if origin not in CORS_ALLOWED_ORIGINS:
-        CORS_ALLOWED_ORIGINS.append(origin)
-    if origin not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(origin)
+CORS_ALLOWED_ORIGIN_REGEXES: list[str] = []
 
 
 USE_X_FORWARDED_HOST = True
@@ -326,6 +304,15 @@ SECURE_REFERRER_POLICY = os.environ.get(
     "DJANGO_SECURE_REFERRER_POLICY", "strict-origin-when-cross-origin"
 )
 X_FRAME_OPTIONS = os.environ.get("DJANGO_X_FRAME_OPTIONS", "DENY")
+
+SURVEY_RESULT_TOKEN_MAX_AGE_SECONDS = int(
+    os.environ.get("SURVEY_RESULT_TOKEN_MAX_AGE_SECONDS", str(60 * 60 * 24 * 14))
+)
+ANON_SID_MAX_AGE_SECONDS = int(
+    os.environ.get("ANON_SID_MAX_AGE_SECONDS", str(60 * 60 * 24 * 10))
+)
+SURVEY_RESULT_RETENTION_DAYS = int(os.environ.get("SURVEY_RESULT_RETENTION_DAYS", "90"))
+SURVEY_RESULT_SCRUB_RAW_AFTER_DAYS = int(os.environ.get("SURVEY_RESULT_SCRUB_RAW_AFTER_DAYS", "30"))
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

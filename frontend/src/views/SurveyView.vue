@@ -338,7 +338,10 @@ const handleSubmit = async () => {
       payload[key] = Number(value);
     });
     const { data } = await apiClient.post('score/', { responses: payload });
-    router.push({ name: 'result', params: { id: data.id }, state: { result: data } });
+    if (data.token) {
+      sessionStorage.setItem(`resultToken:${data.id}`, data.token);
+    }
+    router.push({ name: 'result', params: { id: data.id }, state: { result: data, token: data.token } });
   } catch (err) {
     console.error(err);
     error.value = '結果の送信に失敗しました。時間をおいて再試行してください。';

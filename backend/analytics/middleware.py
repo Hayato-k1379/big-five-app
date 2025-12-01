@@ -19,12 +19,14 @@ class EnsureSessionIdMiddleware:
             request._set_new_sid = str(uuid.uuid4())
         response = self.get_response(request)
         if getattr(request, "_set_new_sid", None):
-            # Persist for one year with SameSite=Lax to keep analytics scoped to this site
+            # Persist for ~10 days with SameSite=Lax to keep analytics scoped to this site
             response.set_cookie(
                 self.COOKIE_NAME,
                 request._set_new_sid,
-                max_age=60 * 60 * 24 * 365,
+                max_age=getattr(settings, "ANON_SID_MAX_AGE_SECONDS", 60 * 60 * 24 * 10),
                 samesite="Lax",
+                secure=not settings.DEBUG,
+                httponly=True,
             )
         return response
 

@@ -11,12 +11,16 @@ export const normalizeBaseUrl = (baseUrl) => {
 };
 
 const envBaseUrl = normalizeBaseUrl(import.meta.env.VITE_API_BASE_URL);
-export const apiBaseUrl = envBaseUrl || FALLBACK_BASE_URL;
+const windowBaseUrl =
+  typeof window !== 'undefined' && window.location?.origin
+    ? normalizeBaseUrl(`${window.location.origin}/api`)
+    : '';
+export const apiBaseUrl = envBaseUrl || windowBaseUrl || FALLBACK_BASE_URL;
 
 if (!envBaseUrl && import.meta.env.DEV) {
   console.warn(
-    '[apiClient] VITE_API_BASE_URL is not set. Falling back to http://127.0.0.1:8000/api. '
-      + 'Set this variable in Vercel/Render environments to avoid accidental relative requests.'
+    '[apiClient] VITE_API_BASE_URL is not set. Falling back to same-origin /api.'
+      + ' 本番環境では必ず VITE_API_BASE_URL を設定してください。'
   );
 }
 
