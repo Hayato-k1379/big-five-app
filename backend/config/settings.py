@@ -1,10 +1,10 @@
 """Django settings for the Big-Five personality survey project."""
 from __future__ import annotations
 
+import logging.config
 import os
 from pathlib import Path
-import logging.config
-from urllib.parse import urlsplit, urlparse, unquote
+from urllib.parse import urlparse, urlsplit, unquote
 
 from django.core.exceptions import ImproperlyConfigured
 
@@ -13,10 +13,17 @@ try:
 except ImportError:  # pragma: no cover - fallback when library missing locally
     dj_database_url = None
 
+
+# ---------------------------------------------------------------------------
+# Path configuration
+# ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_ROOT = BASE_DIR.parent
 
 
+# ---------------------------------------------------------------------------
+# Environment helpers
+# ---------------------------------------------------------------------------
 def env_bool(name: str, default: bool = False) -> bool:
     """Return a boolean for the environment variable ``name``."""
 
@@ -35,17 +42,30 @@ def env_list(name: str, default: list[str] | None = None, separator: str = ",") 
     return [item.strip() for item in raw.split(separator) if item.strip()]
 
 
-DEBUG = env_bool("DJANGO_DEBUG", default=True)
+def _normalize_origin(raw: str) -> str:
+    candidate = raw.strip()
+    if not candidate:
+        return ""
+    if "://" not in candidate:
+        candidate = f"https://{candidate}"
+    return candidate.rstrip("/")
+
+
+# ---------------------------------------------------------------------------
+# Core runtime flags
+# ---------------------------------------------------------------------------
+DEBUG = env_bool("DJANGO_DEBUG", default=False)
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 if not SECRET_KEY:
-    if DEBUG:
-        SECRET_KEY = "django-insecure-change-me"
-    else:
-        raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set when DEBUG is False.")
+    raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set (no hard-coded fallback).")
 
 ENV = os.environ.get("ENV", "dev").strip().lower()
 
+
+# ---------------------------------------------------------------------------
+# Host and origin configuration
+# ---------------------------------------------------------------------------
 CSRF_TRUSTED_ORIGINS: list[str] = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 
 if ENV == "prod":
@@ -60,7 +80,6 @@ else:
         "http://127.0.0.1:5173",
     ]
 
-
 SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "").rstrip("/")
 if SITE_BASE_URL:
     parsed_site = urlsplit(SITE_BASE_URL)
@@ -71,6 +90,14 @@ if SITE_BASE_URL:
         host = parsed_site.hostname
         if host and host not in ALLOWED_HOSTS:
             ALLOWED_HOSTS.append(host)
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+if RENDER_EXTERNAL_HOSTNAME:
+    if RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+    render_origin = _normalize_origin(f"https://{RENDER_EXTERNAL_HOSTNAME}")
+    if render_origin and render_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(render_origin)
 
 SPA_BASE_URL = os.environ.get("SPA_BASE_URL", "https://big-five-app.vercel.app/app").rstrip("/")
 if not SPA_BASE_URL:
@@ -85,6 +112,10 @@ def _build_spa_url(path: str) -> str:
 SPA_SURVEY_URL = _build_spa_url("survey")
 SPA_RESULT_BASE_URL = _build_spa_url("result")
 
+
+# ---------------------------------------------------------------------------
+# Applications and middleware
+# ---------------------------------------------------------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -114,6 +145,10 @@ MIDDLEWARE = [
     "analytics.middleware.LogLandingPageViewMiddleware",
 ]
 
+
+# ---------------------------------------------------------------------------
+# URL and template configuration
+# ---------------------------------------------------------------------------
 ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
@@ -124,17 +159,21 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
-            "django.template.context_processors.request",
-            "django.contrib.auth.context_processors.auth",
-            "django.contrib.messages.context_processors.messages",
-            "config.context_processors.app_links",
-        ],
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "config.context_processors.app_links",
+            ],
         },
     }
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+
+# ---------------------------------------------------------------------------
+# Database
+# ---------------------------------------------------------------------------
 def _absolute_sqlite_path(parsed_url) -> str:
     if parsed_url.path in {"", "/"}:
         return ":memory:"
@@ -221,6 +260,10 @@ def database_config_from_env() -> dict:
 
 DATABASES = {"default": database_config_from_env()}
 
+
+# ---------------------------------------------------------------------------
+# Authentication and internationalization
+# ---------------------------------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -241,6 +284,10 @@ TIME_ZONE = "Asia/Tokyo"
 USE_I18N = True
 USE_TZ = True
 
+
+# ---------------------------------------------------------------------------
+# Static files
+# ---------------------------------------------------------------------------
 STATIC_URL = os.environ.get("DJANGO_STATIC_URL", "/static/")
 if not STATIC_URL.endswith("/"):
     STATIC_URL += "/"
@@ -256,35 +303,23 @@ if DEBUG:
 else:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-NOTE_DETAIL_URL = os.environ.get("NOTE_DETAIL_URL", "https://note.com/your_account/n/xxxxxxxx")
 
+# ---------------------------------------------------------------------------
+# API and CORS
+# ---------------------------------------------------------------------------
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
 }
 
-def _normalize_origin(raw: str) -> str:
-    candidate = raw.strip()
-    if not candidate:
-        return ""
-    if "://" not in candidate:
-        candidate = f"https://{candidate}"
-    return candidate.rstrip("/")
-
-
-RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
-if RENDER_EXTERNAL_HOSTNAME:
-    if RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
-        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-    render_origin = _normalize_origin(f"https://{RENDER_EXTERNAL_HOSTNAME}")
-    if render_origin and render_origin not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(render_origin)
-
 CORS_ALLOW_CREDENTIALS = env_bool("DJANGO_CORS_ALLOW_CREDENTIALS", default=False)
 CORS_ALLOWED_ORIGIN_REGEXES: list[str] = []
 
 
+# ---------------------------------------------------------------------------
+# Security and proxy headers
+# ---------------------------------------------------------------------------
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
@@ -305,6 +340,12 @@ SECURE_REFERRER_POLICY = os.environ.get(
 )
 X_FRAME_OPTIONS = os.environ.get("DJANGO_X_FRAME_OPTIONS", "DENY")
 
+
+# ---------------------------------------------------------------------------
+# Application-specific constants
+# ---------------------------------------------------------------------------
+NOTE_DETAIL_URL = os.environ.get("NOTE_DETAIL_URL", "https://note.com/your_account/n/xxxxxxxx")
+
 SURVEY_RESULT_TOKEN_MAX_AGE_SECONDS = int(
     os.environ.get("SURVEY_RESULT_TOKEN_MAX_AGE_SECONDS", str(60 * 60 * 24 * 14))
 )
@@ -317,6 +358,9 @@ SURVEY_RESULT_SCRUB_RAW_AFTER_DAYS = int(os.environ.get("SURVEY_RESULT_SCRUB_RAW
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
+# ---------------------------------------------------------------------------
+# Logging
+# ---------------------------------------------------------------------------
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

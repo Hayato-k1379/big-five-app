@@ -1,6 +1,7 @@
 # --- Python/Django ---
 __pycache__/
 *.py[cod]
+db.sqlite3
 *.sqlite3
 .venv/
 venv/
