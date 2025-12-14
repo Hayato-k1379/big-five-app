@@ -356,7 +356,7 @@ const fetchResult = async () => {
       result.value = null;
       return;
     }
-    const { data } = await apiClient.get(`results/${route.params.id}/`, { params: { token } });
+    const { data } = await apiClient.get(`results/${route.params.id}/`, { headers: { 'X-Result-Token': token } });
     const normalized = normalizeResultPayload(data);
     if (!normalized) {
       error.value = '結果データの取得形式が不正でした。時間をおいて再試行してください。';

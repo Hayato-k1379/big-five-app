@@ -347,7 +347,7 @@ X_FRAME_OPTIONS = os.environ.get("DJANGO_X_FRAME_OPTIONS", "DENY")
 NOTE_DETAIL_URL = os.environ.get("NOTE_DETAIL_URL", "https://note.com/your_account/n/xxxxxxxx")
 
 SURVEY_RESULT_TOKEN_MAX_AGE_SECONDS = int(
-    os.environ.get("SURVEY_RESULT_TOKEN_MAX_AGE_SECONDS", str(60 * 60 * 24 * 14))
+    os.environ.get("SURVEY_RESULT_TOKEN_MAX_AGE_SECONDS", "600")
 )
 ANON_SID_MAX_AGE_SECONDS = int(
     os.environ.get("ANON_SID_MAX_AGE_SECONDS", str(60 * 60 * 24 * 10))

@@ -53,7 +53,8 @@ class SurveyResultDetailView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, pk: str, *args, **kwargs):
-        token = request.query_params.get("token")
+        # token = request.query_params.get("token")
+        token = request.headers.get("X-Result-Token")
         if not token:
             return Response(
                 {"detail": "結果を表示するにはトークンが必要です。"},
@@ -61,7 +62,7 @@ class SurveyResultDetailView(APIView):
             )
 
         try:
-            unsigned = signer.unsign(token, max_age=settings.SURVEY_RESULT_TOKEN_MAX_AGE_SECONDS)
+            unsigned = signer.unsign(token, max_age=getattr(settings, "SURVEY_RESULT_TOKEN_MAX_AGE_SECONDS", 600))
         except SignatureExpired:
             return Response(
                 {"detail": "この結果リンクの有効期限が切れています。"},
